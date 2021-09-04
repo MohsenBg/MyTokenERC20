@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi&display=swap");
+.container {
+  position: relative;
+  z-index: 5;
+  .AccountData {
+    position: absolute;
+    right: 40px;
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    .addressAccount {
+      margin-right: 1em;
+      font-family: "Kaisei HarunoUmi", serif;
+      font-size: 16px;
+      @media (max-width: 500px) {
+        font-size: 12px;
+      }
+    }
+    .AccountImg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      border: white 3px solid;
+      cursor: pointer;
+      @media (max-width: 500px) {
+        width: 50px;
+        height: 50px;
+      }
+    }
+    .AccountImgHover {
+      animation: big 500ms ease-in-out;
+      transform: scale(1.1);
+    }
+
+    .AccountImgNotHover {
+      animation: small 500ms ease-in-out;
+      transform: scale(1);
+    }
+  }
+}
+@keyframes small {
+  from {
+    transform: scale(1.1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes big {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}

@@ -1,0 +1,234 @@
+@import url("https://fonts.googleapis.com/css2?family=Besley&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Tokumin&display=swap");
+.container {
+  display: flex;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 80px);
+  margin-bottom: 3em;
+  .content {
+    position: relative;
+    .backIcon {
+      &:hover {
+        color: rgb(255, 94, 0);
+      }
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 25px;
+      position: absolute;
+      left: 10px;
+      span {
+        font-size: 10px;
+      }
+    }
+    .title {
+      text-align: center;
+    }
+    .panel {
+      .background {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 400px;
+        height: 420px;
+        border-radius: 8px;
+        border: solid 2px white;
+        background-color: rgb(4, 11, 37);
+        box-shadow: 1px 2px 15px 3px rgb(48, 111, 136);
+        .contents {
+          margin-top: 0.5em;
+          .contentsTitle {
+            text-align: center;
+            font-size: 18px;
+          }
+          .address {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            input {
+              color: white;
+              background-color: black;
+              width: 300px;
+              height: 40px;
+              padding: 0 5px;
+              border-radius: 6px;
+              border: rgb(252, 197, 197) 1px solid;
+
+              &:focus {
+                border: white 2px solid;
+                outline: none;
+              }
+            }
+            .checkerIcons {
+              position: absolute;
+              right: 10px;
+              top: 4px;
+              font-size: 25px;
+            }
+          }
+          .transitionSettings {
+            width: 100%;
+            margin-top: 2em;
+            .asset {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              .assetText {
+                width: 50px;
+                font-family: "Besley", serif;
+                font-size: 17px;
+                margin-left: 10px;
+              }
+              .assetCoinContainer {
+                width: 250px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .assetCoinImg {
+                  margin-left: 25px;
+                }
+                .tokenTexts {
+                  margin-left: -1em;
+                  .balanceToken {
+                    font-size: 14px;
+                    span {
+                      font-size: 12px;
+                    }
+                  }
+                }
+              }
+            }
+            .amount {
+              margin-top: 1em;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              .containerLeft {
+                width: 80px;
+                .amountText {
+                  font-family: "Besley", serif;
+                  font-size: 17px;
+                }
+                .MaxAmount {
+                  margin-right: 10px;
+                  text-align: center;
+                  color: aqua;
+                  background-color: rgba(0, 255, 255, 0.178);
+                  padding: 2px 8px;
+                  border-radius: 5px;
+                  font-size: 14px;
+                  font-family: "Kaisei Tokumin", serif;
+                  &:hover {
+                    background-color: rgba(0, 255, 170, 0.385);
+                  }
+                  cursor: pointer;
+                }
+              }
+              .amountCoinContainer {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                width: 220px;
+
+                .tokenTexts {
+                  margin-left: 4em;
+                  width: 200px;
+                  .balanceTransfer {
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                    .textarea {
+                      margin-right: 5p;
+                    }
+
+                    span {
+                      font-size: 14px;
+                    }
+                    .balance {
+                      margin-right: 0.5em;
+                      font-size: 16px;
+                      &:focus {
+                        outline: none;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          .gasContainer {
+            font-family: "Kaisei Tokumin", serif;
+            margin-top: 1em;
+            display: flex;
+            .text {
+              .mainText {
+                font-size: 15px;
+              }
+              .uint {
+                font-size: 12px;
+              }
+            }
+            .gasPrice {
+              width: 100%;
+
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+            }
+            .gasLimit {
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+            }
+            .inputGas {
+              width: 100px;
+            }
+          }
+          .btnContainer {
+            margin-top: 1em;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            div {
+              border-radius: 5px;
+              margin-top: 0.5em;
+              font-family: "Besley", serif;
+              background-color: aqua;
+              color: purple;
+              font-weight: 600;
+              text-shadow: blue 1px 2px 3px;
+              padding: 3px 35px;
+              cursor: pointer;
+              &:hover {
+                background-color: aquamarine;
+              }
+            }
+          }
+          .warning {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1em;
+            div {
+              padding: 8px 15px;
+              background-color: rgba(255, 0, 0, 0.185);
+              color: rgb(255, 0, 0);
+              font-size: 14px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
