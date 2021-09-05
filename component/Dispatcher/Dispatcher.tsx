@@ -11,11 +11,27 @@ import {
 } from "../../config_Contracts";
 import { ActionTypeLoopToken } from "../../Redux/LoopToken/ActionType";
 import { initialState } from "../../Redux/store";
+import { ActionTypeContractSale } from "../../Redux/ContractSale/ActionType";
 const Dispatcher = () => {
   const dispatch = useDispatch();
 
+  const chain_id: any = process.env.NEXT_PUBLIC_CHAIN_ID_LOCAL;
+
   const currentAccount = useSelector(
     (state: typeof initialState) => state.AccountData.addressAccounts
+  );
+
+  const ContractSaleETH = useSelector(
+    (state: typeof initialState) => state.ContractSale.BalanceETH
+  );
+  const ContractSaleLoop = useSelector(
+    (state: typeof initialState) => state.ContractSale.BalanceLoopToken
+  );
+  const TokenPrice = useSelector(
+    (state: typeof initialState) => state.ContractSale.TokenPrice
+  );
+  const TokenSold = useSelector(
+    (state: typeof initialState) => state.ContractSale.TokenSold
   );
 
   const currentBalanceETH = useSelector(
@@ -24,6 +40,7 @@ const Dispatcher = () => {
   const currentBalanceLoop = useSelector(
     (state: typeof initialState) => state.LoopToken.balance
   );
+
   //** chainIdHandler
   useEffect(() => {
     const OnChangeChainId = async () => {
@@ -45,7 +62,6 @@ const Dispatcher = () => {
       if (provider) {
         //Meta Mask installed
         const web3 = new Web3(provider);
-
         const accounts = await provider.request({
           method: "eth_requestAccounts",
         });
@@ -53,6 +69,7 @@ const Dispatcher = () => {
         setAccount(accounts);
         BalanceOfETH(web3, accounts);
         BalanceOfLoopToken(web3, accounts);
+        BalanceContractSale(web3, accounts);
       }
     };
     handelWalletIsConnected();
@@ -69,6 +86,7 @@ const Dispatcher = () => {
           setAccount(accounts);
           BalanceOfETH(web3, accounts);
           BalanceOfLoopToken(web3, accounts);
+          BalanceContractSale(web3, accounts);
         });
       }
     };
@@ -117,8 +135,8 @@ const Dispatcher = () => {
   const BalanceOfLoopToken = async (web3: Web3, accounts: any) => {
     if (accounts.length >= 1) {
       const ChainId = await web3.eth.getChainId();
-      if (ChainId === 1337) {
-        const Contract = await new web3.eth.Contract(
+      if (ChainId === parseInt(chain_id)) {
+        const Contract = new web3.eth.Contract(
           //@ts-ignore
           ABI_LOOP_TOKEN_CONTRACT,
           ADDRESS_LOOP_TOKEN
@@ -144,6 +162,53 @@ const Dispatcher = () => {
     dispatch({ type: ActionTypeAccountInfo.CHAIN_ID, payload: chainId });
   };
 
+  const BalanceContractSale = async (web3: Web3, accounts: any) => {
+    const ChainId = await web3.eth.getChainId();
+    if (accounts.length >= 1) {
+      const ContractLoopToken = new web3.eth.Contract(
+        //@ts-ignore
+        ABI_LOOP_TOKEN_CONTRACT,
+        ADDRESS_LOOP_TOKEN
+      );
+      const ContractSale = new web3.eth.Contract(
+        //@ts-ignore
+        ABI_SELL_CONTRACT,
+        ADDRESS_SELL_TOKEN
+      );
+      if (ChainId === parseInt(chain_id)) {
+        const BalanceOFLoop = await ContractLoopToken.methods
+          .balanceOf(ADDRESS_SELL_TOKEN)
+          .call();
+        if (BalanceOFLoop !== ContractSaleLoop) {
+          dispatch({
+            type: ActionTypeContractSale.BALANCE_CONTRACT_SALE_LOOP,
+            payload: BalanceOFLoop,
+          });
+        }
+        const BalanceOFETh = await web3.eth.getBalance(ADDRESS_SELL_TOKEN);
+        if (BalanceOFETh !== ContractSaleETH) {
+          dispatch({
+            type: ActionTypeContractSale.BALANCE_CONTRACT_SALE_ETH,
+            payload: BalanceOFETh,
+          });
+        }
+        const tokenPrice = await ContractSale.methods.tokenPrice().call();
+        if (tokenPrice !== TokenPrice) {
+          dispatch({
+            type: ActionTypeContractSale.TOKEN_PRICE,
+            payload: tokenPrice,
+          });
+        }
+        const tokenSold = await ContractSale.methods.tokenSold().call();
+        if (tokenSold !== TokenSold) {
+          dispatch({
+            type: ActionTypeContractSale.TOKEN_SOLD,
+            payload: tokenSold,
+          });
+        }
+      }
+    }
+  };
   return null;
 };
 

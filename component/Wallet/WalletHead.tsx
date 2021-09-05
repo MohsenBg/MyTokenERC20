@@ -11,6 +11,8 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { ActionTypeAccountInfo } from "../../Redux/AccountInfo/ActionType/ActionType";
 import { MdContentCopy } from "react-icons/md";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { AiOutlineReload } from "react-icons/ai";
+
 import Link from "next/link";
 const WalletHead = () => {
   const dispatch = useDispatch();
@@ -20,6 +22,7 @@ const WalletHead = () => {
   const [copy, setCopy] = useState(false);
   const [hover, setHover] = useState(false);
   const [utils, setUtils] = useState("wei");
+  const [reload, setReload] = useState(false);
   const [accountBalance, setAccountBalance] = useState<any>(0);
   const Balance = useSelector(
     (state: typeof initialState) => state.AccountData.balance
@@ -62,11 +65,49 @@ const WalletHead = () => {
       setCopy(false);
     }, 3000);
   };
+
+  //ReloadBalance
+  const BalanceOfETH = async () => {
+    setReload(true);
+    const provider: any = await detectEthereumProvider();
+    const web3: Web3 = new Web3(provider);
+    if (provider) {
+      if (AccountAddress.length >= 1) {
+        const balance = await web3.eth.getBalance(AccountAddress[0]);
+        if (balance !== Balance) {
+          dispatch({
+            type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
+            payload: balance,
+          });
+        }
+      } else {
+        dispatch({
+          type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
+          payload: "",
+        });
+      }
+    }
+    setTimeout(() => {
+      setReload(false);
+    }, 1000);
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.titleWallet}>Wallet</h1>
       <div className={styles.content}>
         <div className={styles.MainBackground}>
+          <div
+            className={
+              reload
+                ? `${styles.reloadIcon}
+          ${styles.reloadIconActive}`
+                : `${styles.reloadIcon}`
+            }
+            onClick={BalanceOfETH}
+          >
+            <AiOutlineReload />
+          </div>
           <div className={styles.walletImg}>
             <div>
               <Image

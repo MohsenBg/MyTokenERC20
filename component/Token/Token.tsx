@@ -1,14 +1,26 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { TokenList, TokenItem } from "./TokenItems";
 import styles from "./Token.module.scss";
 import { initialState } from "../../Redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
+import {
+  ABI_LOOP_TOKEN_CONTRACT,
+  ABI_SELL_CONTRACT,
+  ADDRESS_LOOP_TOKEN,
+  ADDRESS_SELL_TOKEN,
+} from "../../config_Contracts";
+import Web3 from "web3";
+import { ActionTypeLoopToken } from "../../Redux/LoopToken/ActionType";
+import detectEthereumProvider from "@metamask/detect-provider";
+import { AiOutlineReload } from "react-icons/ai";
 const Token = () => {
   const LoopTokenBalance = useSelector(
     (state: typeof initialState) => state.LoopToken.balance
   );
+  const [reload, setReload] = useState(false);
+  const dispatch = useDispatch();
 
   const tokensBalance = (TokenName: any) => {
     switch (TokenName) {
@@ -19,7 +31,43 @@ const Token = () => {
         break;
     }
   };
-
+  const currentAccount = useSelector(
+    (state: typeof initialState) => state.AccountData.addressAccounts
+  );
+  const BalanceOfLoopToken = async () => {
+    setReload(true);
+    const provider: any = await detectEthereumProvider();
+    const web3: Web3 = new Web3(provider);
+    if (provider) {
+      if (currentAccount.length >= 1) {
+        const ChainId = await web3.eth.getChainId();
+        if (ChainId === 1337) {
+          const Contract = await new web3.eth.Contract(
+            //@ts-ignore
+            ABI_LOOP_TOKEN_CONTRACT,
+            ADDRESS_LOOP_TOKEN
+          );
+          const Balance = await Contract.methods
+            .balanceOf(currentAccount[0])
+            .call();
+          if (LoopTokenBalance !== Balance) {
+            dispatch({
+              type: ActionTypeLoopToken.BALANCE,
+              balance: Balance,
+            });
+          }
+        }
+      } else {
+        dispatch({
+          type: ActionTypeLoopToken.BALANCE,
+          balance: 0,
+        });
+      }
+    }
+    setTimeout(() => {
+      setReload(false);
+    }, 1000);
+  };
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Tokens</h1>
@@ -28,6 +76,17 @@ const Token = () => {
           {TokenList.map((token: TokenItem) => {
             return (
               <div className={styles.card} key={token.id}>
+                <div
+                  onClick={BalanceOfLoopToken}
+                  className={
+                    reload
+                      ? `${styles.reloadIcon}
+          ${styles.reloadIconActive}`
+                      : `${styles.reloadIcon}`
+                  }
+                >
+                  <AiOutlineReload />
+                </div>
                 <div className={styles.mainContent}>
                   <div className={styles.TokenImg}>
                     <Image
