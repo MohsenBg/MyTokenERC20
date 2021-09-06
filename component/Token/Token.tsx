@@ -41,7 +41,7 @@ const Token = () => {
     if (provider) {
       if (currentAccount.length >= 1) {
         const ChainId = await web3.eth.getChainId();
-        if (ChainId === 1337) {
+        if (ChainId === 4) {
           const Contract = await new web3.eth.Contract(
             //@ts-ignore
             ABI_LOOP_TOKEN_CONTRACT,

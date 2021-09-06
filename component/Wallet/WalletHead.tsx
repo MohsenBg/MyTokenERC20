@@ -41,7 +41,6 @@ const WalletHead = () => {
           type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
           payload: balance,
         });
-
         if (value >= 1000000000000000) {
           const ether = web3.utils.fromWei(Balance, "ether");
           setUtils("ETH");
@@ -57,7 +56,10 @@ const WalletHead = () => {
         }
       }
     }
-    setAccountBalance(number);
+    if (number.toString().length > 8) {
+      number = number.substring(0, 8);
+    }
+    setAccountBalance(number.toString());
   };
   const copied = () => {
     setCopy(true);
