@@ -40,22 +40,19 @@ const Token = () => {
     const web3: Web3 = new Web3(provider);
     if (provider) {
       if (currentAccount.length >= 1) {
-        const ChainId = await web3.eth.getChainId();
-        if (ChainId === 4) {
-          const Contract = await new web3.eth.Contract(
-            //@ts-ignore
-            ABI_LOOP_TOKEN_CONTRACT,
-            ADDRESS_LOOP_TOKEN
-          );
-          const Balance = await Contract.methods
-            .balanceOf(currentAccount[0])
-            .call();
-          if (LoopTokenBalance !== Balance) {
-            dispatch({
-              type: ActionTypeLoopToken.BALANCE,
-              balance: Balance,
-            });
-          }
+        const Contract = await new web3.eth.Contract(
+          //@ts-ignore
+          ABI_LOOP_TOKEN_CONTRACT,
+          ADDRESS_LOOP_TOKEN
+        );
+        const Balance = await Contract.methods
+          .balanceOf(currentAccount[0])
+          .call();
+        if (LoopTokenBalance !== Balance) {
+          dispatch({
+            type: ActionTypeLoopToken.BALANCE,
+            balance: Balance,
+          });
         }
       } else {
         dispatch({
@@ -114,7 +111,11 @@ const Token = () => {
                   </div>
                 </div>
                 <div className={styles.buttons}>
-                  {token.buyAble ? <div>Buy</div> : null}
+                  {token.buyAble ? (
+                    <Link href="/buyToken">
+                      <div>Buy</div>
+                    </Link>
+                  ) : null}
                   <Link href={`/transaction/${token.Name}`}>
                     <div>Send</div>
                   </Link>

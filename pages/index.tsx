@@ -3,7 +3,6 @@ import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import Image from "next/image";
 import InfinityImg from "../public/assets/HomePage/Infinity-5.9s-800px.svg";
-import Error from "../component/Error/Error";
 const Home: NextPage = () => {
   return (
     <>

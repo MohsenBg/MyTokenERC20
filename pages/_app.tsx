@@ -7,7 +7,6 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
 import Dispatcher from "../component/Dispatcher/Dispatcher";
 import Error from "../component/Error/Error";
-
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>

@@ -49,6 +49,14 @@ const Error = () => {
         dispatch({
           type: ActionTypeError.END_ERROR,
         });
+      case ErrorTypes.WRONG_CHAIN_ID:
+        dispatch({
+          type: ActionTypeError.END_ERROR,
+        });
+      case ErrorTypes.CONNECT_YOUR_ACCOUNT:
+        dispatch({
+          type: ActionTypeError.END_ERROR,
+        });
         break;
       default:
         break;
