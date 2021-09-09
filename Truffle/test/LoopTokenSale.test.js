@@ -1,4 +1,6 @@
 const assert = require("assert");
+const truffleAssert = require("truffle-assertions");
+
 contract("LoopTokenSale", (accounts) => {
   const LoopToken = artifacts.require("LoopToken");
   const LoopTokenSale = artifacts.require("LoopTokenSale");
@@ -15,7 +17,11 @@ contract("LoopTokenSale", (accounts) => {
     const address = this.loopTokenSale.address;
     assert.notStrictEqual(address, undefined, "address undefined");
     assert.notStrictEqual(address, "", "address is empty string");
-    assert.notStrictEqual(address, 0x0, "address has 0x0");
+    assert.notStrictEqual(
+      address,
+      0x0000000000000000000000000000000000000000,
+      "address has 0x0"
+    );
     assert.notStrictEqual(address, null, "address is null");
   });
   it("check the contract with the correct value", async () => {
@@ -34,21 +40,20 @@ contract("LoopTokenSale", (accounts) => {
     //check enough token exists for sell
     //1-send token from admin to contract
     SaleTokenAddress = await this.loopTokenSale.address;
-      await this.loopToken.transfer(SaleTokenAddress, tokensAvailableForSell, {
+    await this.loopToken.transfer(SaleTokenAddress, tokensAvailableForSell, {
       from: admin,
     });
     //2-check token transfer
     contractBalance = await this.loopToken.balanceOf(SaleTokenAddress);
     assert.strictEqual(contractBalance.toNumber(), tokensAvailableForSell);
     //3- buy more than token exists in contract for checking require
-    try {
-      await this.loopTokenSale.buyToken(numberOfToken, {
+
+    await truffleAssert.reverts(
+      this.loopTokenSale.buyToken(numberOfToken, {
         from: buyer,
         value: 99999999999999,
-      });
-    } catch (error) {
-      assert.strictEqual(error.data.stack.includes("revert"), true);
-    }
+      })
+    );
 
     const BuyToken = await this.loopTokenSale.buyToken(numberOfToken, {
       from: buyer,
@@ -66,7 +71,6 @@ contract("LoopTokenSale", (accounts) => {
     const balanceOfContractSale = await this.loopToken.balanceOf(
       SaleTokenAddress
     );
-    console.log(SaleTokenAddress);
     assert.strictEqual(balanceOfBuyer.toNumber(), 10, "balanceOf buyer");
     assert.strictEqual(
       balanceOfContractSale.toNumber(),
@@ -74,14 +78,14 @@ contract("LoopTokenSale", (accounts) => {
       "balance of contract"
     );
     //try buy token different from the ether value
-    try {
-      await this.loopTokenSale.buyToken(numberOfToken, {
+
+    await truffleAssert.reverts(
+      this.loopTokenSale.buyToken(numberOfToken, {
         from: buyer,
         value: 1,
-      });
-    } catch (error) {
-      assert.strictEqual(error.data.stack.includes("revert"), true);
-    }
+      })
+    );
+
     //event
     //check event Sell
     const event = await BuyToken.logs;
@@ -104,11 +108,7 @@ contract("LoopTokenSale", (accounts) => {
     );
   });
   it("endSale", async () => {
-    try {
-      await this.loopTokenSale.endSale({ from: buyer });
-    } catch (error) {
-      assert.strictEqual(error.data.stack.includes("revert"), true);
-    }
+    await truffleAssert.reverts(this.loopTokenSale.endSale({ from: buyer }));
     const ContractSoldAddress = await this.loopToken.address;
     const TokenSold = await this.loopTokenSale.tokenSold();
     await this.loopTokenSale.endSale({ from: admin });

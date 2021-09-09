@@ -1,5 +1,7 @@
 const assert = require("assert");
 const LoopToken = artifacts.require("LoopToken");
+const truffleAssert = require("truffle-assertions");
+
 contract("LoopToken", async (accounts) => {
   before(async () => {
     this.loopToken = await LoopToken.deployed();
@@ -49,14 +51,10 @@ contract("LoopToken", async (accounts) => {
 
   it("transfers", async () => {
     //transaction 01 checking for revert (effect of require in transfer function)
-    try {
-      transaction = await this.loopToken.transfer.call(
-        accounts[0],
-        9999999999999
-      );
-    } catch (error) {
-      assert(error.data.stack.includes("revert"), true);
-    }
+
+    await truffleAssert.reverts(
+      this.loopToken.transfer.call(accounts[0], 9999999999999)
+    );
 
     //transaction 02 => account[0] 2000000 - 500000|| account[1] 0 + 500000
     const result = await this.loopToken.transfer(accounts[1], 500000, {
@@ -164,61 +162,75 @@ contract("LoopToken", async (accounts) => {
     const fromAccount = await accounts[2];
     const toAccount = await accounts[3];
     const spendingAccount = await accounts[4];
-    await this.loopToken.transfer(fromAccount,100, { from: accounts[0]})
-    await this.loopToken.approve(spendingAccount,10, { from:fromAccount})
+    await this.loopToken.transfer(fromAccount, 100, { from: accounts[0] });
+    await this.loopToken.approve(spendingAccount, 10, { from: fromAccount });
     //test require for try transfer more than token in exist in account
-    try{
-       const resultTransform = await this.loopToken.transferFrom(fromAccount,toAccount,9999,{from: spendingAccount})
-       resultTransform;
-    }catch(error){
-        assert.strictEqual(error.data.stack.includes("revert"), true);
-    }
-   //test require for try transfer more than token allowance to transfer
-   try{
-    const resultTransform = await this.loopToken.transferFrom(fromAccount,toAccount,50,{from: spendingAccount})
-    resultTransform; 
-}catch(error){
-     assert.strictEqual(error.data.stack.includes("revert"), true);
- }
 
-const transferFromFunction = await this.loopToken.transferFrom(fromAccount,toAccount,5,{from: spendingAccount});
-const fromAccountBalance =await this.loopToken.balanceOf(accounts[2]);
-const toAccountBalance = await this.loopToken.balanceOf(accounts[3]);
-assert.strictEqual(fromAccountBalance.toNumber(),95);
-assert.strictEqual(toAccountBalance.toNumber(),5);
-const UpdatedAllowance = await this.loopToken.allowance(fromAccount,spendingAccount);
-assert.strictEqual(UpdatedAllowance.toNumber(),5)
-//check return true transferFrom
-const checkResult = await this.loopToken.transferFrom.call(fromAccount,toAccount,5,{from: spendingAccount})
-assert.strictEqual(checkResult,true,"check return true transferForm")
+    await truffleAssert.reverts(
+      this.loopToken.transferFrom(fromAccount, toAccount, 9999, {
+        from: spendingAccount,
+      })
+    );
 
-//check event TransFrom
-  const event = await transferFromFunction.logs;
-  assert.strictEqual(
-    event.length,
-    1,
-    "more or less than one event exist in transferFrom function "
-  );
-  //check name of selected event
-  assert.strictEqual(
-    event[0].event,
-    "TransferFrom",
-    "event: select incorrect event"
-  );
-  assert.strictEqual(
-    event[0].args._from,
-    accounts[2],
-    "event: select incorrect account for send value"
-  );
-  assert.strictEqual(
-    event[0].args._to,
-    accounts[3],
-    "event: select incorrect account for receive value"
-  );
-  assert.strictEqual(
-    event[0].args._value.toNumber(),
-    5,
-    "event: count of Coin (value) for send select incorrect"
-  );
-});
+    //test require for try transfer more than token allowance to transfer
+
+    await truffleAssert.reverts(
+       this.loopToken.transferFrom(fromAccount, toAccount, 50, {
+        from: spendingAccount,
+      })
+    );
+
+    const transferFromFunction = await this.loopToken.transferFrom(
+      fromAccount,
+      toAccount,
+      5,
+      { from: spendingAccount }
+    );
+    const fromAccountBalance = await this.loopToken.balanceOf(accounts[2]);
+    const toAccountBalance = await this.loopToken.balanceOf(accounts[3]);
+    assert.strictEqual(fromAccountBalance.toNumber(), 95);
+    assert.strictEqual(toAccountBalance.toNumber(), 5);
+    const UpdatedAllowance = await this.loopToken.allowance(
+      fromAccount,
+      spendingAccount
+    );
+    assert.strictEqual(UpdatedAllowance.toNumber(), 5);
+    //check return true transferFrom
+    const checkResult = await this.loopToken.transferFrom.call(
+      fromAccount,
+      toAccount,
+      5,
+      { from: spendingAccount }
+    );
+    assert.strictEqual(checkResult, true, "check return true transferForm");
+
+    //check event TransFrom
+    const event = await transferFromFunction.logs;
+    assert.strictEqual(
+      event.length,
+      1,
+      "more or less than one event exist in transferFrom function "
+    );
+    //check name of selected event
+    assert.strictEqual(
+      event[0].event,
+      "TransferFrom",
+      "event: select incorrect event"
+    );
+    assert.strictEqual(
+      event[0].args._from,
+      accounts[2],
+      "event: select incorrect account for send value"
+    );
+    assert.strictEqual(
+      event[0].args._to,
+      accounts[3],
+      "event: select incorrect account for receive value"
+    );
+    assert.strictEqual(
+      event[0].args._value.toNumber(),
+      5,
+      "event: count of Coin (value) for send select incorrect"
+    );
+  });
 });
