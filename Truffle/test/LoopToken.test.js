@@ -10,7 +10,7 @@ contract("LoopToken", async (accounts) => {
     const address = this.loopToken.address;
     assert.notStrictEqual(address, undefined, "address undefined");
     assert.notStrictEqual(address, "", "address is empty string");
-    assert.notStrictEqual(address, 0x0, "address has 0x0");
+    assert.notStrictEqual(address, "0x0000000000000000000000000000000000000000", "address has 0x0");
     assert.notStrictEqual(address, null, "address is null");
   });
 

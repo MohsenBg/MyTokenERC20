@@ -3,7 +3,6 @@ pragma solidity >=0.6.0 <0.9.0;
 import "./LoopToken.sol";
 
 contract Products is LoopToken {
-    address Admin;
     uint32 public Count = 0;
     struct item {
         uint32 Id;
@@ -16,9 +15,39 @@ contract Products is LoopToken {
     }
     mapping(address => mapping(uint32 => item)) public items;
 
-    constructor() LoopToken(2000000) {
-        Admin = msg.sender;
-    }
+    event _AddProducts(
+        uint32 Id,
+        address Owner,
+        string ProductName,
+        string descriptors,
+        string ImgUrl,
+        uint56 Price,
+        bool SellAble
+    );
+
+    event _BuyProduct(
+        address from,
+        uint32 Id,
+        address Owner,
+        string ProductName,
+        string descriptors,
+        string ImgUrl,
+        uint56 Price,
+        bool SellAble
+    );
+
+    event _ChangeProduct(
+        uint32 Id,
+        address Owner,
+        string ProductName,
+        string descriptors,
+        string ImgUrl,
+        uint56 Price,
+        bool SellAble
+    );
+    event _DeleteProduct(uint32 Id, address Owner);
+
+    constructor() LoopToken(2000000) {}
 
     function AddProducts(
         string memory _productName,
@@ -34,6 +63,15 @@ contract Products is LoopToken {
         Count++;
         uint32 id = Count;
         items[msg.sender][id] = item(
+            id,
+            msg.sender,
+            _productName,
+            _descriptors,
+            _ImgUrl,
+            _Price,
+            _SallAble
+        );
+        emit _AddProducts(
             id,
             msg.sender,
             _productName,
@@ -64,6 +102,16 @@ contract Products is LoopToken {
             false
         );
         items[msg.sender][_productId] = selectedProduct;
+        emit _BuyProduct(
+            _productOwner,
+            selectedProduct.Id,
+            msg.sender,
+            selectedProduct.ProductName,
+            selectedProduct.descriptors,
+            selectedProduct.ImgUrl,
+            selectedProduct.Price,
+            false
+        );
     }
 
     function ChangeProduct(
@@ -86,6 +134,15 @@ contract Products is LoopToken {
             _Price,
             _SallAble
         );
+        emit _ChangeProduct(
+            selectedProduct.Id,
+            selectedProduct.Owner,
+            _productName,
+            _descriptors,
+            _ImgUrl,
+            _Price,
+            _SallAble
+        );
     }
 
     function DeleteProduct(uint32 _productId) public {
@@ -93,5 +150,6 @@ contract Products is LoopToken {
         require(selectedProduct.Id != 0, "product not exist");
         require(msg.sender == selectedProduct.Owner);
         delete items[msg.sender][_productId];
+        emit _DeleteProduct(_productId, msg.sender);
     }
 }
