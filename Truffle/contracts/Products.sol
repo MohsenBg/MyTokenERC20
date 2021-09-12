@@ -50,10 +50,48 @@ contract Products is LoopToken {
             _productOwner != msg.sender,
             "product owner can't buy own Product"
         );
-        require(selectedProduct.Price != 0, "product not exist");
+        require(selectedProduct.Id != 0, "product not exist");
         require(selectedProduct.SellAble, "product most sellAble");
         require(transfer(_productOwner, selectedProduct.Price));
         delete items[_productOwner][_productId];
+        selectedProduct = item(
+            selectedProduct.Id,
+            msg.sender,
+            selectedProduct.ProductName,
+            selectedProduct.descriptors,
+            selectedProduct.ImgUrl,
+            selectedProduct.Price,
+            false
+        );
         items[msg.sender][_productId] = selectedProduct;
+    }
+
+    function ChangeProduct(
+        uint32 _productId,
+        string memory _productName,
+        string memory _descriptors,
+        string memory _ImgUrl,
+        uint56 _Price,
+        bool _SallAble
+    ) public {
+        item memory selectedProduct = items[msg.sender][_productId];
+        require(selectedProduct.Id != 0, "product not exist");
+        require(msg.sender == selectedProduct.Owner);
+        items[msg.sender][_productId] = item(
+            selectedProduct.Id,
+            selectedProduct.Owner,
+            _productName,
+            _descriptors,
+            _ImgUrl,
+            _Price,
+            _SallAble
+        );
+    }
+
+    function DeleteProduct(uint32 _productId) public {
+        item memory selectedProduct = items[msg.sender][_productId];
+        require(selectedProduct.Id != 0, "product not exist");
+        require(msg.sender == selectedProduct.Owner);
+        delete items[msg.sender][_productId];
     }
 }

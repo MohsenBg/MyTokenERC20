@@ -26,6 +26,7 @@ contract LoopTokenSale {
         require(msg.value == multiply(_numberOfToken, tokenPrice));
         require(tokenContract.balanceOf(address(this)) >= _numberOfToken);
         require(tokenContract.transfer(msg.sender, _numberOfToken));
+        require(tokenSold <= 800000);
         tokenSold += _numberOfToken;
         emit Sell(msg.sender, _numberOfToken);
     }

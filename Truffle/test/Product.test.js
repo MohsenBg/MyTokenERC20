@@ -108,16 +108,60 @@ contract("Product", (accounts) => {
     );
   });
   it('buyProduct',async()=>{
+    await truffleAssertions.reverts(this.products.BuyProduct(member,10,{from:Admin}))
+    await truffleAssertions.reverts(this.products.BuyProduct(Admin,2,{from:member}))
     await this.products.BuyProduct(member,3,{from:Admin});
     let Item = await this.products.items(member, 3);
     let Id = await Item.Id;
     let balance = await this.products.balanceOf(Admin);
     assert.strictEqual(balance.toNumber(),1850000,"balance of Admin");
     assert.strictEqual(Id.toNumber(),0,"products id should 0")
-     Item = await this.products.items(Admin, 3);
-     Id = await Item.Id;
-     balance = await this.products.balanceOf(member);
+    Item = await this.products.items(Admin, 3);
+    Id = await Item.Id;
+    balance = await this.products.balanceOf(member);
     assert.strictEqual(balance.toNumber(),150000,"balance of member");
     assert.strictEqual(Id.toNumber(),3,"products id should 3")
+    assert.strictEqual(Item.SellAble,false,"products shouldn't sellAble")
+
+  })
+  it("ChangeProduct", async ()=>{
+    await truffleAssertions.reverts(this.products.ChangeProduct(5,"BigCar","fast very fast","https/:/Image.fastCar.png",180000,true,{from:Admin}))
+    await truffleAssertions.reverts(this.products.ChangeProduct(3,"BigCar","fast very fast","https/:/Image.fastCar.png",180000,true,{from:member}))
+    await this.products.ChangeProduct(3,"BigCar","fast very fast","https/:/Image.fastCar.png",180000,true,{from:Admin});
+    let Item = await this.products.items(Admin,3);
+    let Id = await Item.Id;
+    let Owner = await Item.Owner;
+    let ProductName = await Item.ProductName;
+    let descriptors = await Item.descriptors;
+    let ImgUrl = await Item.ImgUrl;
+    let Price = await Item.Price;
+    let SellAble = await Item.SellAble;
+    assert.strictEqual(Id.toNumber(), 3, "check Id");
+    assert.strictEqual(Owner, Admin, "check address");
+    assert.strictEqual(ProductName, "BigCar", "check productName");
+    assert.strictEqual(descriptors, "fast very fast", "check descriptors");
+    assert.strictEqual(ImgUrl, "https/:/Image.fastCar.png", "check ImgUrl");
+    assert.strictEqual(Price.toNumber(), 180000, "check Price");
+    assert.strictEqual(SellAble, true, "check SellAble");
+  })
+  it('DeleteProduct',async()=>{
+    await truffleAssertions.reverts(this.products.DeleteProduct(5,{from:Admin}))
+    await truffleAssertions.reverts(this.products.DeleteProduct(3,{from:member}))
+    await this.products.DeleteProduct(3,{from:Admin})
+    let Item = await this.products.items(Admin,3);
+    let Id = await Item.Id;
+    let Owner = await Item.Owner;
+    let ProductName = await Item.ProductName;
+    let descriptors = await Item.descriptors;
+    let ImgUrl = await Item.ImgUrl;
+    let Price = await Item.Price;
+    let SellAble = await Item.SellAble;
+    assert.strictEqual(Id.toNumber(), 0, "check Id");
+    assert.strictEqual(Owner, "0x0000000000000000000000000000000000000000", "check address");
+    assert.strictEqual(ProductName, "", "check productName");
+    assert.strictEqual(descriptors, "", "check descriptors");
+    assert.strictEqual(ImgUrl, "", "check ImgUrl");
+    assert.strictEqual(Price.toNumber(), 0, "check Price");
+    assert.strictEqual(SellAble, false, "check SellAble");
   })
 });
