@@ -1,4 +1,4 @@
-const LoopToken = artifacts.require("LoopToken");
+const LoopToken = artifacts.require("Products");
 const LoopTokenSale = artifacts.require("LoopTokenSale");
 
 module.exports =  async(deployer)=> {

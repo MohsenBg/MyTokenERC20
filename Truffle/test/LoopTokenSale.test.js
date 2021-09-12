@@ -2,7 +2,7 @@ const assert = require("assert");
 const truffleAssert = require("truffle-assertions");
 
 contract("LoopTokenSale", (accounts) => {
-  const LoopToken = artifacts.require("LoopToken");
+  const LoopToken = artifacts.require("Products");
   const LoopTokenSale = artifacts.require("LoopTokenSale");
   const TokenPrice = 300000000000000; // wei
   const buyer = accounts[1];

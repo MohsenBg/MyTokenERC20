@@ -4,7 +4,7 @@ pragma solidity >=0.6.0 <0.9.0;
 //Erc20
 //1-name
 //2-symbol
-//3-decimals
+//3-decimals not added
 //4-totalSupply
 //5-balanceOf
 //6-transfer + Event
