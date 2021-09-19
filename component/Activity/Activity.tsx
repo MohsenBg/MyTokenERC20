@@ -53,6 +53,7 @@ const Activity = () => {
       },
       (error: any, result: any) => {
         if (result) {
+          console.log(result);
           for (let i = 0; i < result.length; i++) {
             let Objects = {
               id: result[i].transactionHash,
@@ -65,6 +66,8 @@ const Activity = () => {
             SellLoopEvent.push(Objects);
           }
         }
+        console.log(currentAccount[0]);
+
         if (error) {
           console.log(error);
         }

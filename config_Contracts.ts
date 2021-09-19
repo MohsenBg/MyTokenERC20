@@ -14,6 +14,6 @@ export const ABI_LOOP_TOKEN_CONTRACT = Json_Loop_Token.abi;
 
 //!Rinkeby
 //*contract LoopTokenSale address
-export const ADDRESS_SELL_TOKEN = "0x3C3ea359F335C1dF1d1294468A58D3aa28beD226";
+export const ADDRESS_SELL_TOKEN = "0x3D73BDf010a2853A91F50311b579fCE32B6Dfe25";
 //*contract LoopToken address
-export const ADDRESS_LOOP_TOKEN = "0x9c13e0eEbED01ad4B7bD7Cd90A2Ac6Dee19dFC73";
+export const ADDRESS_LOOP_TOKEN = "0x5389bEc8fE9BF58Ee79c5315082E01A791a639Aa";
