@@ -3,4 +3,5 @@ export enum ActionTypeContractSale {
   BALANCE_CONTRACT_SALE_LOOP = "BALANCE_CONTRACT_SALE_LOOP",
   TOKEN_PRICE = "TOKEN_PRICE",
   TOKEN_SOLD = "TOKEN_SOLD",
+  USD = "USD",
 }

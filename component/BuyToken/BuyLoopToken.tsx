@@ -12,6 +12,9 @@ import {
 import { ActionTypeContractSale } from "../../Redux/ContractSale/ActionType";
 import { initialState } from "../../Redux/store";
 import styles from "./BuyLoopToken.module.scss";
+
+let check: any;
+
 const BuyLoopToken = () => {
   const [warning, setWarning] = useState<any>("");
   const [countToken, setCountToken] = useState<any>("0");
@@ -27,6 +30,10 @@ const BuyLoopToken = () => {
   ]);
   const [tokenPriceEth, setTokenPriceEth] = useState<any>(null);
 
+  const Usd = useSelector(
+    (state: typeof initialState) => state.ContractSale.Usd
+  );
+
   const balanceOfContract = useSelector(
     (state: typeof initialState) => state.ContractSale.BalanceLoopToken
   );
@@ -36,6 +43,7 @@ const BuyLoopToken = () => {
   }, [tokenPrice]);
   const dispatch = useDispatch();
   const time = 2000;
+
   useEffect(() => {
     const interval = setInterval(async () => {
       const provider: any = await detectEthereumProvider();
@@ -50,20 +58,23 @@ const BuyLoopToken = () => {
           const BalanceOFLoop = await ContractLoopToken.methods
             .balanceOf(ADDRESS_SELL_TOKEN)
             .call();
-          if (BalanceOFLoop !== balanceOfContract) {
+          if (BalanceOFLoop !== check) {
             dispatch({
               type: ActionTypeContractSale.BALANCE_CONTRACT_SALE_LOOP,
               payload: BalanceOFLoop,
             });
           }
+          check = BalanceOFLoop;
         }
       }
     }, time);
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
     BalanceOfContract();
   }, [balanceOfContract]);
+
   const BalanceOfContract = async () => {
     let numbers = [];
     for (let i = 0; i < balanceOfContract.length; i++) {
@@ -75,6 +86,7 @@ const BuyLoopToken = () => {
     }
     setRenderBalance(numbers);
   };
+
   //CheckValueInputCorrect
   useEffect(() => {
     const toNumber = parseFloat(countToken);
@@ -99,6 +111,7 @@ const BuyLoopToken = () => {
       setTokenPriceEth(newValue);
     }
   };
+
   const handelNextBtn = async () => {
     const provider: any = await detectEthereumProvider();
     if (provider) {
@@ -108,6 +121,7 @@ const BuyLoopToken = () => {
         ABI_SELL_CONTRACT,
         ADDRESS_SELL_TOKEN
       );
+
       const Value = (parseFloat(tokenPrice) * countToken).toString();
       await ContractSale.methods
         .buyToken(countToken)
@@ -117,6 +131,7 @@ const BuyLoopToken = () => {
         });
     }
   };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Buy Loop Token</h1>
@@ -170,7 +185,7 @@ const BuyLoopToken = () => {
                     </div>
                   </div>
                   <div className={styles.tokenCount}>
-                    <span className={styles.text}>Number Of Token</span>
+                    <span className={styles.text}>Count Token</span>
                     <div>
                       <span className={styles.value}>{countToken}</span>
                       <span className={styles.util}>Loop</span>
@@ -185,6 +200,18 @@ const BuyLoopToken = () => {
                         ).toFixed(4)}
                       </span>
                       <span className={styles.util}>ETH</span>
+                    </div>
+                  </div>
+                  <div className={styles.Usd}>
+                    <span className={styles.text}>USD</span>
+                    <div>
+                      <span className={styles.value}>
+                        {(
+                          (parseFloat(Usd.toString().slice(0, -6)) / 100) *
+                          parseInt(countToken)
+                        ).toLocaleString("en-US")}
+                      </span>
+                      <span className={styles.util}>$</span>
                     </div>
                   </div>
                 </div>

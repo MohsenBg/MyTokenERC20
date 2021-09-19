@@ -16,9 +16,13 @@ interface TokenSold {
   type: ActionTypeContractSale.TOKEN_SOLD;
   payload: any;
 }
-
+interface Usd {
+  type: ActionTypeContractSale.USD;
+  payload: any;
+}
 export type ActionsContractSale =
   | BalanceContractETH
   | BalanceContractLoop
   | TokenPrice
-  | TokenSold;
+  | TokenSold
+  | Usd;

@@ -1,34 +1,85 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoopToken</title>
+</head>
+<style>
+.title{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+    text-shadow: 1px 2px 3px gold;
+}
+.imageContainer{
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.imgLoopToken{
+display: flex;
+background-color: black;
+border-radius: 50%;
+border: 2px solid white;
+}
+.linkButton{
+    background-color: rgba(255, 0, 0, 0.212);
+   color: aqua;
+   text-shadow: 1px 2px 1px rgb(39, 39, 39);
+   border-radius: 8px;
+ padding: 10px 25px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    
+}
+.linkButton:hover{
+    background-color: rgba(0, 255, 255, 0.212);
+   color: rgb(255, 0, 0);
+}
+.secondTitle{
+    text-shadow: 1px 2px 8px rgb(255, 145, 0);
+}
+</style>
+<body>
+    <div>
+        <h1 class="title">
+            LoopToken
+        </h1>
+        <div class="imageContainer">
+            <img
+        class="imgLoopToken"
+        src="https://gcdn.pbrd.co/images/jjJz67SAi6Dt.x-icon?o=1" alt="LoopToken">
+    </div>
+</div>
+<div>
+    <h2 class="secondTitle">
+        About
+    </h2>
+    <span>
+        It's Normal Token and people can Buy some Product. 
+    </span> 
+<h2 class="secondTitle">
+    status
+</h2>
 
-## Getting Started
+<p>
+    project 1.0v Active on test rinkeby.
+</p>
+<p>
+    you can check it on Link  below
+</p>
+<a 
+href="https://my-token-erc-20.vercel.app">
+    <button
+    class="linkButton"
+    >
+        LoopToken
+    </button>
+</a>
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+</div>
+</body>
+</html>

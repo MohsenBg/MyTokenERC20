@@ -25,9 +25,7 @@ const SendETH = () => {
   const [sizeWidth, setSizeWidth] = useState(30);
   const [gasPrice, setGasPrice] = useState<any>();
   const [gasLimit, setGasLimit] = useState<any>();
-
   const router = useRouter();
-
   const userAccount = useSelector(
     (state: typeof initialState) => state.AccountData.addressAccounts
   );
@@ -86,8 +84,13 @@ const SendETH = () => {
         });
         const ether = web3.utils.fromWei(Balance, "ether");
         number = ether;
-        setAccountBalance(number);
+        if (typeof number === "string") {
+          if (number.toString().length > 8) {
+            number = number.substring(0, 8);
+          }
+        }
       }
+      setAccountBalance(number);
     }
   };
 
@@ -199,9 +202,13 @@ const SendETH = () => {
     const gasPriceToEther = web3.utils.fromWei(gasPriceToWei, "ether");
     const BalanceToEther = web3.utils.fromWei(`${Balance - 100000}`, "ether");
     const TotalGas = gasLimit * parseFloat(gasPriceToEther);
-    console.log(TotalGas);
-    const maxBalance = parseFloat(BalanceToEther) - TotalGas;
-
+    let maxBalance: any = parseFloat(BalanceToEther) - TotalGas;
+    maxBalance = maxBalance.toString();
+    if (typeof maxBalance === "string") {
+      if (maxBalance.length > 8) {
+        maxBalance = maxBalance.substring(0, 8);
+      }
+    }
     onBalanceTransferChange(maxBalance);
   };
 
@@ -272,8 +279,8 @@ const SendETH = () => {
                         <Image
                           src={EtherImg}
                           alt="WallEtherImg"
-                          height="80px"
-                          width="80px"
+                          height="60px"
+                          width="60px"
                         />
                       </div>
                       <div className={styles.tokenTexts}>
@@ -316,6 +323,7 @@ const SendETH = () => {
                                 fontSize: "15px",
                                 backgroundColor: "transparent",
                                 color: "white",
+                                outline: "none",
                               }}
                               onChange={(e) =>
                                 onBalanceTransferChange(e.target.value)

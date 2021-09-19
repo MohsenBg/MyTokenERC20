@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chainlink/contracts": "^0.2.1",
     "@metamask/detect-provider": "^1.2.0",
     "@truffle/hdwallet-provider": "^1.5.0",
     "@types/react-copy-to-clipboard": "^5.0.1",

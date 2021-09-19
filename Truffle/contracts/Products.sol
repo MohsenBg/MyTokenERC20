@@ -13,7 +13,7 @@ contract Products is LoopToken {
         uint56 Price;
         bool SellAble;
     }
-    mapping(address => mapping(uint32 => item)) public items;
+    mapping(uint32 => item) public items;
 
     event _AddProducts(
         uint32 Id,
@@ -26,9 +26,9 @@ contract Products is LoopToken {
     );
 
     event _BuyProduct(
-        address from,
+        address Seller,
         uint32 Id,
-        address Owner,
+        address Buyer,
         string ProductName,
         string descriptors,
         string ImgUrl,
@@ -62,7 +62,7 @@ contract Products is LoopToken {
         );
         Count++;
         uint32 id = Count;
-        items[msg.sender][id] = item(
+        items[id] = item(
             id,
             msg.sender,
             _productName,
@@ -82,16 +82,16 @@ contract Products is LoopToken {
         );
     }
 
-    function BuyProduct(address _productOwner, uint32 _productId) public {
-        item memory selectedProduct = items[_productOwner][_productId];
+    function BuyProduct(uint32 _productId) public {
+        item memory selectedProduct = items[_productId];
+        address ProductOwner = selectedProduct.Owner;
         require(
-            _productOwner != msg.sender,
+            ProductOwner != msg.sender,
             "product owner can't buy own Product"
         );
         require(selectedProduct.Id != 0, "product not exist");
         require(selectedProduct.SellAble, "product most sellAble");
-        require(transfer(_productOwner, selectedProduct.Price));
-        delete items[_productOwner][_productId];
+        require(transfer(ProductOwner, selectedProduct.Price));
         selectedProduct = item(
             selectedProduct.Id,
             msg.sender,
@@ -101,9 +101,9 @@ contract Products is LoopToken {
             selectedProduct.Price,
             false
         );
-        items[msg.sender][_productId] = selectedProduct;
+        items[_productId] = selectedProduct;
         emit _BuyProduct(
-            _productOwner,
+            ProductOwner,
             selectedProduct.Id,
             msg.sender,
             selectedProduct.ProductName,
@@ -122,10 +122,10 @@ contract Products is LoopToken {
         uint56 _Price,
         bool _SallAble
     ) public {
-        item memory selectedProduct = items[msg.sender][_productId];
+        item memory selectedProduct = items[_productId];
         require(selectedProduct.Id != 0, "product not exist");
         require(msg.sender == selectedProduct.Owner);
-        items[msg.sender][_productId] = item(
+        items[_productId] = item(
             selectedProduct.Id,
             selectedProduct.Owner,
             _productName,
@@ -146,10 +146,10 @@ contract Products is LoopToken {
     }
 
     function DeleteProduct(uint32 _productId) public {
-        item memory selectedProduct = items[msg.sender][_productId];
+        item memory selectedProduct = items[_productId];
         require(selectedProduct.Id != 0, "product not exist");
         require(msg.sender == selectedProduct.Owner);
-        delete items[msg.sender][_productId];
+        delete items[_productId];
         emit _DeleteProduct(_productId, msg.sender);
     }
 }

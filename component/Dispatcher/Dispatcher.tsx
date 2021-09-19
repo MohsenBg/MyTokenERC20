@@ -24,25 +24,6 @@ const Dispatcher = () => {
     (state: typeof initialState) => state.AccountData.addressAccounts
   );
 
-  const ContractSaleETH = useSelector(
-    (state: typeof initialState) => state.ContractSale.BalanceETH
-  );
-  const ContractSaleLoop = useSelector(
-    (state: typeof initialState) => state.ContractSale.BalanceLoopToken
-  );
-  const TokenPrice = useSelector(
-    (state: typeof initialState) => state.ContractSale.TokenPrice
-  );
-  const TokenSold = useSelector(
-    (state: typeof initialState) => state.ContractSale.TokenSold
-  );
-
-  const currentBalanceETH = useSelector(
-    (state: typeof initialState) => state.AccountData.balance
-  );
-  const currentBalanceLoop = useSelector(
-    (state: typeof initialState) => state.LoopToken.balance
-  );
   const router = useRouter();
   //** chainIdHandler
   useEffect(() => {
@@ -109,21 +90,19 @@ const Dispatcher = () => {
     }
   }, []);
 
-  {
-    //! didn't use for lack memory
-    // const time = 5000;
-    // useEffect(() => {
-    //   const interval = setInterval(async () => {
-    //     const provider: any = await detectEthereumProvider();
-    //     const web3 = new Web3(provider);
-    //     if (provider) {
-    //       BalanceOfETH(web3, currentAccount);
-    //       BalanceOfLoopToken(web3, currentAccount);
-    //     }
-    //   }, time);
-    //   return () => clearInterval(interval);
-    // }, []);
-  }
+  //! lack memory
+  // const time = 5000;
+  // useEffect(() => {
+  //   const interval = setInterval(async () => {
+  //     const provider: any = await detectEthereumProvider();
+  //     const web3 = new Web3(provider);
+  //     if (provider) {
+  //       BalanceOfETH(web3, a);
+  //       BalanceOfLoopToken(web3, a);
+  //     }
+  //   }, time);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   //!-------------------------------
   const setAccount = async (accounts: any) => {
@@ -144,26 +123,36 @@ const Dispatcher = () => {
       });
     } else {
       router.push("/", undefined, { shallow: false });
-    }
-  };
-
-  const BalanceOfETH = async (web3: Web3, accounts: any) => {
-    if (accounts.length >= 1) {
-      const balance = await web3.eth.getBalance(accounts[0]);
-      if (balance !== currentBalanceETH) {
-        dispatch({
-          type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
-          payload: balance,
-        });
-      }
-    } else {
       dispatch({
-        type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
-        payload: "",
+        type: ActionTypeAccountInfo.ACCOUNT_ADDRESS,
+        payload: accounts,
       });
     }
   };
 
+  let current_Balance_ETH: any;
+  const BalanceOfETH = async (web3: Web3, accounts: any) => {
+    if (accounts.length >= 1) {
+      const balance = await web3.eth.getBalance(accounts[0]);
+      if (balance !== current_Balance_ETH) {
+        dispatch({
+          type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
+          payload: balance,
+        });
+        current_Balance_ETH = balance;
+      }
+    } else {
+      if ("" !== current_Balance_ETH) {
+        dispatch({
+          type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
+          payload: "",
+        });
+        current_Balance_ETH = "";
+      }
+    }
+  };
+
+  let current_Balance_Loop: any;
   const BalanceOfLoopToken = async (web3: Web3, accounts: any) => {
     if (accounts.length >= 1) {
       const Contract = new web3.eth.Contract(
@@ -172,17 +161,21 @@ const Dispatcher = () => {
         ADDRESS_LOOP_TOKEN
       );
       const Balance = await Contract.methods.balanceOf(accounts[0]).call();
-      if (currentBalanceLoop !== Balance) {
+      if (current_Balance_Loop !== Balance) {
         dispatch({
           type: ActionTypeLoopToken.BALANCE,
           balance: Balance,
         });
+        current_Balance_Loop = Balance;
       }
     } else {
-      dispatch({
-        type: ActionTypeLoopToken.BALANCE,
-        balance: 0,
-      });
+      if (current_Balance_Loop !== 0) {
+        dispatch({
+          type: ActionTypeLoopToken.BALANCE,
+          balance: 0,
+        });
+        current_Balance_Loop = 0;
+      }
     }
   };
 
@@ -191,6 +184,11 @@ const Dispatcher = () => {
     dispatch({ type: ActionTypeAccountInfo.CHAIN_ID, payload: chainId });
   };
 
+  let balanceSaleLoop: any;
+  let balanceSaleEth: any;
+  let token_Price: any;
+  let token_sold: any;
+  let usd: any;
   const BalanceContractSale = async (web3: Web3, accounts: any) => {
     if (accounts.length >= 1) {
       const ContractLoopToken = new web3.eth.Contract(
@@ -207,41 +205,53 @@ const Dispatcher = () => {
       const BalanceOFLoop = await ContractLoopToken.methods
         .balanceOf(ADDRESS_SELL_TOKEN)
         .call();
-      if (BalanceOFLoop !== ContractSaleLoop) {
+
+      if (BalanceOFLoop !== balanceSaleLoop) {
         dispatch({
           type: ActionTypeContractSale.BALANCE_CONTRACT_SALE_LOOP,
           payload: BalanceOFLoop,
         });
-
-        const BalanceOFETh = await web3.eth.getBalance(ADDRESS_SELL_TOKEN);
-        if (BalanceOFETh !== ContractSaleETH) {
-          dispatch({
-            type: ActionTypeContractSale.BALANCE_CONTRACT_SALE_ETH,
-            payload: BalanceOFETh,
-          });
-        }
-        const tokenPrice = await ContractSale.methods.tokenPrice().call();
-        if (tokenPrice !== TokenPrice) {
-          dispatch({
-            type: ActionTypeContractSale.TOKEN_PRICE,
-            payload: tokenPrice,
-          });
-        }
-        const tokenSold = await ContractSale.methods.tokenSold().call();
-        if (tokenSold !== TokenSold) {
-          dispatch({
-            type: ActionTypeContractSale.TOKEN_SOLD,
-            payload: tokenSold,
-          });
-        }
       }
+      balanceSaleLoop = BalanceOFLoop;
+      const BalanceOFETh = await web3.eth.getBalance(ADDRESS_SELL_TOKEN);
+      if (BalanceOFETh !== balanceSaleEth) {
+        dispatch({
+          type: ActionTypeContractSale.BALANCE_CONTRACT_SALE_ETH,
+          payload: BalanceOFETh,
+        });
+      }
+      balanceSaleEth = BalanceOFETh;
+      const tokenPrice = await ContractSale.methods.tokenPrice().call();
+      if (tokenPrice !== token_Price) {
+        dispatch({
+          type: ActionTypeContractSale.TOKEN_PRICE,
+          payload: tokenPrice,
+        });
+      }
+      token_Price = tokenPrice;
+      const tokenSold = await ContractSale.methods.tokenSold().call();
+      if (tokenSold !== token_sold) {
+        dispatch({
+          type: ActionTypeContractSale.TOKEN_SOLD,
+          payload: tokenSold,
+        });
+      }
+      token_sold = tokenSold;
+
+      const usdPrice = await ContractSale.methods.usdPrice().call();
+      if (usdPrice !== usd) {
+        dispatch({
+          type: ActionTypeContractSale.USD,
+          payload: usdPrice,
+        });
+      }
+      usd = usdPrice;
     }
   };
 
   const CheckChainId = async (web3: Web3) => {
     let currentChainId: any = await web3.eth.getChainId();
     const chain_id: any = process.env.NEXT_PUBLIC_RINKEBY_CHAIN_ID;
-
     if (currentChainId.toString() !== chain_id.toString()) {
       dispatch({
         type: ActionTypeError.ON_ERROR,

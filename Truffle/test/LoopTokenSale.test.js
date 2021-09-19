@@ -28,7 +28,7 @@ contract("LoopTokenSale", (accounts) => {
     const TokenContract = await this.loopTokenSale.tokenContract();
     assert.notStrictEqual(TokenContract, undefined, "address undefined");
     assert.notStrictEqual(TokenContract, "", "address is empty string");
-    assert.notStrictEqual(TokenContract, 0x0, "address has 0x0");
+    assert.notStrictEqual(TokenContract, "0x0000000000000000000000000000000000000000", "address has 0x0");
     assert.notStrictEqual(TokenContract, null, "address is null");
     const price = await this.loopTokenSale.tokenPrice();
     assert.strictEqual(price.toNumber(), TokenPrice, "token price");

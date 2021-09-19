@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/Wallet.module.scss";
 import WalletHead from "../../component/Wallet/WalletHead";
 import Web3 from "web3";
@@ -8,10 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { initialState } from "../../Redux/store";
 import { ActionTypeAccountInfo } from "../../Redux/AccountInfo/ActionType/ActionType";
 import Token from "../../component/Token/Token";
+import TransActions from "../../component/Activity/Activity";
 const Wallet = () => {
   const AccountAddress = useSelector(
     (state: typeof initialState) => state.AccountData.addressAccounts
   );
+
+  const [navigation, setNavigation] = useState("Assets");
 
   const dispatch = useDispatch();
 
@@ -41,10 +44,24 @@ const Wallet = () => {
       </Head>
       <div className={styles.WalletHead}>
         <WalletHead />
+        <div className={styles.buttons}>
+          <div className={styles.btn} onClick={() => setNavigation("Assets")}>
+            Assets
+          </div>
+          <div className={styles.btn} onClick={() => setNavigation("Activity")}>
+            Activity
+          </div>
+        </div>
       </div>
-      <div className={styles.Token}>
-        <Token />
-      </div>
+      {navigation === "Assets" ? (
+        <div className={styles.Token}>
+          <Token />
+        </div>
+      ) : navigation === "Activity" ? (
+        <div>
+          <TransActions />
+        </div>
+      ) : null}
     </div>
   );
 };

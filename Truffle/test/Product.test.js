@@ -30,7 +30,7 @@ contract("Product", (accounts) => {
       { from: Admin }
     );
     let Count = await this.products.Count();
-    let Item = await this.products.items(Admin, Count.toNumber());
+    let Item = await this.products.items(Count.toNumber());
     let Id = await Item.Id;
     let Owner = await Item.Owner;
     let ProductName = await Item.ProductName;
@@ -55,7 +55,7 @@ contract("Product", (accounts) => {
       { from: Admin }
     );
     Count = await this.products.Count();
-    Item = await this.products.items(Admin, Count.toNumber());
+    Item = await this.products.items( Count.toNumber());
     Id = await Item.Id;
     Owner = await Item.Owner;
     ProductName = await Item.ProductName;
@@ -72,7 +72,7 @@ contract("Product", (accounts) => {
     assert.strictEqual(SellAble, false, "check SellAble");
 
     //fist member product
-    await this.products.AddProducts(
+    const AddProduct = await this.products.AddProducts(
       "car",
       "fast car",
       "https://carImg.png",
@@ -80,8 +80,9 @@ contract("Product", (accounts) => {
       true,
       { from: member }
     );
+    await AddProduct;
     Count = await this.products.Count();
-    Item = await this.products.items(member, Count.toNumber());
+    Item = await this.products.items( Count.toNumber());
     Id = await Item.Id;
     Owner = await Item.Owner;
     ProductName = await Item.ProductName;
@@ -106,29 +107,172 @@ contract("Product", (accounts) => {
         { from: member }
       )
     );
+  
+  //!event
+  
+  const event = await AddProduct.logs;
+  
+    assert.strictEqual(
+       event.length,
+       1,
+       " one event should exist "
+     );
+  
+     assert.strictEqual(event[0].event, "_AddProducts", "event: select incorrect event");
+     
+     assert.strictEqual(
+       event[0].args.Id.toNumber(),
+       3,
+       "event: select incorrect Id "
+     );
+
+     assert.strictEqual(
+      event[0].args.Owner,
+      member,
+      "event: select incorrect OwnerProduct"
+    );
+
+    assert.strictEqual(
+      event[0].args.ProductName,
+      "car",
+      "event: select incorrect ProductName"
+    );
+
+    assert.strictEqual(
+      event[0].args.descriptors,
+      'fast car',
+      "event: select incorrect descriptors"
+    );
+
+    assert.strictEqual(
+      event[0].args.ImgUrl,
+      'https://carImg.png',
+      "event: select incorrect Id "
+    );
+
+    assert.strictEqual(
+      event[0].args.Price.toNumber(),
+      150000,
+      "event: select incorrect Price"
+    );
+  
+    assert.strictEqual(
+      event[0].args.SellAble,
+      true,
+      "event: product should be SellAble "
+    );
+
   });
   it('buyProduct',async()=>{
-    await truffleAssertions.reverts(this.products.BuyProduct(member,10,{from:Admin}))
-    await truffleAssertions.reverts(this.products.BuyProduct(Admin,2,{from:member}))
-    await this.products.BuyProduct(member,3,{from:Admin});
-    let Item = await this.products.items(member, 3);
-    let Id = await Item.Id;
+    await truffleAssertions.reverts(this.products.BuyProduct(10,{from:Admin}))
+    await truffleAssertions.reverts(this.products.BuyProduct(2,{from:member}))
+    const BuyProduct = await this.products.BuyProduct(3,{from:Admin});
+    await BuyProduct;
+    let Item = await this.products.items(3);
+    let Owner = await Item.Owner;
+    assert.strictEqual(Owner,Admin,"products Owner most be Admin")
     let balance = await this.products.balanceOf(Admin);
     assert.strictEqual(balance.toNumber(),1850000,"balance of Admin");
-    assert.strictEqual(Id.toNumber(),0,"products id should 0")
-    Item = await this.products.items(Admin, 3);
-    Id = await Item.Id;
+    let Id = await Item.Id;
+    assert.strictEqual(Id.toNumber(),3,"products id should 3")
     balance = await this.products.balanceOf(member);
     assert.strictEqual(balance.toNumber(),150000,"balance of member");
-    assert.strictEqual(Id.toNumber(),3,"products id should 3")
     assert.strictEqual(Item.SellAble,false,"products shouldn't sellAble")
 
+
+    //!event
+
+    const event = await BuyProduct.logs;
+    assert.strictEqual(
+       event.length,
+       2,
+       " two event should exist transfer/_BuyProducts "
+     );
+
+    //* first event
+
+    assert.strictEqual(
+      event[0].event,
+      "Transfer",
+      "event: select incorrect event"
+    );
+
+    assert.strictEqual(
+      event[0].args._from,
+      Admin,
+      "event: select incorrect account for send value"
+    );
+
+    assert.strictEqual(
+      event[0].args._to,
+      member,
+      "event: select incorrect account for receive value"
+    );
+
+    assert.strictEqual(
+      event[0].args._value.toNumber(),
+      150000,
+      "event: select incorrect account for receive value"
+    );
+
+    //* second event
+
+     assert.strictEqual(event[1].event, "_BuyProduct", "event: select incorrect event");
+     
+     assert.strictEqual(
+      event[1].args.Buyer,
+      Admin,
+      "event: select incorrect Buyer of Product"
+    );
+
+     assert.strictEqual(
+       event[1].args.Id.toNumber(),
+       3,
+       "event: select incorrect Id "
+     );
+
+     assert.strictEqual(
+      event[1].args.Seller,
+      member,
+      "event: select incorrect seller of Product"
+    );
+
+    assert.strictEqual(
+      event[1].args.ProductName,
+      "car",
+      "event: select incorrect ProductName"
+    );
+
+    assert.strictEqual(
+      event[1].args.descriptors,
+      'fast car',
+      "event: select incorrect descriptors"
+    );
+
+    assert.strictEqual(
+      event[1].args.ImgUrl,
+      'https://carImg.png',
+      "event: select incorrect Id "
+    );
+
+    assert.strictEqual(
+      event[1].args.Price.toNumber(),
+      150000,
+      "event: select incorrect Price"
+    );
+
+    assert.strictEqual(
+      event[1].args.SellAble,
+      false,
+      "event: product should be SellAble "
+    );
   })
   it("ChangeProduct", async ()=>{
     await truffleAssertions.reverts(this.products.ChangeProduct(5,"BigCar","fast very fast","https/:/Image.fastCar.png",180000,true,{from:Admin}))
     await truffleAssertions.reverts(this.products.ChangeProduct(3,"BigCar","fast very fast","https/:/Image.fastCar.png",180000,true,{from:member}))
-    await this.products.ChangeProduct(3,"BigCar","fast very fast","https/:/Image.fastCar.png",180000,true,{from:Admin});
-    let Item = await this.products.items(Admin,3);
+    const ChangeProducts = await this.products.ChangeProduct(3,"BigCar","fast very fast","https/:/Image.fastCar.png",180000,true,{from:Admin});
+    await ChangeProducts;
+    let Item = await this.products.items(3);
     let Id = await Item.Id;
     let Owner = await Item.Owner;
     let ProductName = await Item.ProductName;
@@ -143,12 +287,68 @@ contract("Product", (accounts) => {
     assert.strictEqual(ImgUrl, "https/:/Image.fastCar.png", "check ImgUrl");
     assert.strictEqual(Price.toNumber(), 180000, "check Price");
     assert.strictEqual(SellAble, true, "check SellAble");
+  
+  //!event
+  
+  const event = await ChangeProducts.logs;
+  
+    assert.strictEqual(
+       event.length,
+       1,
+       " one event should exist "
+     );
+     
+  
+     assert.strictEqual(event[0].event, "_ChangeProduct", "event: select incorrect event");
+     
+     assert.strictEqual(
+       event[0].args.Id.toNumber(),
+       3,
+       "event: select incorrect Id "
+     );
+
+     assert.strictEqual(
+      event[0].args.Owner,
+      Admin,
+      "event: select incorrect OwnerProduct"
+    );
+
+    assert.strictEqual(
+      event[0].args.ProductName,
+      "BigCar",
+      "event: select incorrect ProductName"
+    );
+
+    assert.strictEqual(
+      event[0].args.descriptors,
+      'fast very fast',
+      "event: select incorrect descriptors"
+    );
+
+    assert.strictEqual(
+      event[0].args.ImgUrl,
+      'https/:/Image.fastCar.png',
+      "event: select incorrect Id "
+    );
+
+    assert.strictEqual(
+      event[0].args.Price.toNumber(),
+      180000,
+      "event: select incorrect Price"
+    );
+  
+    assert.strictEqual(
+      event[0].args.SellAble,
+      true,
+      "event: product should be SellAble "
+    );
   })
   it('DeleteProduct',async()=>{
     await truffleAssertions.reverts(this.products.DeleteProduct(5,{from:Admin}))
     await truffleAssertions.reverts(this.products.DeleteProduct(3,{from:member}))
-    await this.products.DeleteProduct(3,{from:Admin})
-    let Item = await this.products.items(Admin,3);
+    const DeleteProducts = await this.products.DeleteProduct(3,{from:Admin})
+    await DeleteProducts;
+    let Item = await this.products.items(3);
     let Id = await Item.Id;
     let Owner = await Item.Owner;
     let ProductName = await Item.ProductName;
@@ -163,5 +363,29 @@ contract("Product", (accounts) => {
     assert.strictEqual(ImgUrl, "", "check ImgUrl");
     assert.strictEqual(Price.toNumber(), 0, "check Price");
     assert.strictEqual(SellAble, false, "check SellAble");
+  
+      //!event
+  
+  const event = await DeleteProducts.logs;
+  
+  assert.strictEqual(
+     event.length,
+     1,
+     " one event should exist "
+   );
+ 
+   assert.strictEqual(event[0].event, "_DeleteProduct", "event: select incorrect event");
+  
+   assert.strictEqual(
+     event[0].args.Id.toNumber(),
+     3,
+     "event: select incorrect Id "
+   );
+  
+   assert.strictEqual(
+    event[0].args.Owner,
+    Admin,
+    "event: select incorrect OwnerProduct"
+  );
   })
 });

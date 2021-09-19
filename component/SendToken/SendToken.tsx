@@ -303,6 +303,7 @@ const SendTokenComponent: React.FunctionComponent<Props> = ({ params }) => {
                                 fontSize: "15px",
                                 backgroundColor: "transparent",
                                 color: "white",
+                                outline: "none",
                               }}
                               onChange={(e) =>
                                 onBalanceTransferChange(e.target.value)

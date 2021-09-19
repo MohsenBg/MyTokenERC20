@@ -21,6 +21,8 @@ contract LoopToken {
     string public standard = "Loop Token v1.0";
     //totalSupply
     uint256 public totalSupply;
+    //decimals
+    uint16 decimals = 0;
 
     //transfer Event
     event Transfer(address indexed _from, address indexed _to, uint256 _value);

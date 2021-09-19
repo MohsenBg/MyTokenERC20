@@ -1,6 +1,7 @@
 .container {
   color: white;
   margin-bottom: 1em;
+  min-height: 400px;
   .title {
     text-align: center;
   }
@@ -50,9 +51,17 @@
             }
             margin-left: 0.3em;
             .usd {
-              margin-top: -15px;
-              span {
+              margin-top: -10px;
+              div {
                 font-size: 12px;
+              }
+              .unit {
+                margin-right: 0.2em;
+              }
+              .number {
+              }
+              .dolorIcon {
+                margin-left: 0.3em;
               }
             }
           }

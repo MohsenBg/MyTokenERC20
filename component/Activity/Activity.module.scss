@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap");
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  margin-bottom: 2em;
+  min-height: 400px;
+  .title {
+    text-align: center;
+  }
+  .cards {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.267);
+    width: 350px;
+    max-height: 380px;
+    overflow: auto;
+    border-radius: 10px;
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: #f5f5f5;
+    }
+    &::-webkit-scrollbar-thumb {
+      //      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      background-color: #555;
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      background-color: rgb(68, 68, 68);
+    }
+    .titleCards {
+      div {
+        font-family: "Azeret Mono", monospace;
+        word-spacing: -8px;
+        margin-bottom: 0.3em;
+      }
+    }
+    .card {
+      padding: 10px 0;
+      margin: 1em 0;
+      &:first-child {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.103);
+        cursor: pointer;
+      }
+      display: flex;
+      width: 100%;
+      .left {
+        display: flex;
+        align-items: center;
+        width: 65%;
+        .arrowIcon {
+          display: flex;
+          padding: 10px;
+          border-radius: 50%;
+          color: aqua;
+          font-size: 18px;
+          margin-right: 1em;
+          margin-left: 1em;
+          background-color: rgba(0, 255, 255, 0.185);
+        }
+        .address {
+          font-size: 12px;
+        }
+      }
+      .right {
+        width: 35%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        span {
+          margin-left: 0.8em;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .cardsRenders {
+    overflow: hidden;
+    min-height: 380px;
+  }
+  .NoActivity {
+    margin: 2em 0;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .text {
+      top: 60px;
+      position: absolute;
+      padding: 25px 0;
+      font-family: "Azeret Mono", monospace;
+    }
+  }
+  .Transaction {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    margin-top: 45px;
+    position: absolute;
+  }
+}

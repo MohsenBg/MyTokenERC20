@@ -125,32 +125,39 @@
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          width: 33%;
+          width: 30%;
         }
         .tokenCount {
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          width: 33%;
+          width: 25%;
         }
         .totalPrice {
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          width: 33%;
+          width: 25%;
+        }
+        .Usd {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 20%;
         }
         .text {
           font-family: "Varela Round", sans-serif;
-          font-size: 15px;
+          font-size: 14px;
         }
         .value {
-          font-size: 15px;
+          font-size: 12px;
           font-family: "Varela Round", sans-serif;
         }
         .util {
-          font-size: 12px;
+          font-size: 10px;
           font-family: "Varela Round", sans-serif;
           margin-left: 5px;
         }
@@ -167,7 +174,7 @@
           background-color: rgba(147, 230, 245, 0.363);
           padding: 4px 30px;
           &:hover {
-            color: rgb(127, 246, 255);
+            color: #7ff6ff;
             background-color: rgba(97, 240, 61, 0.5);
           }
         }

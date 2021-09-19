@@ -34,6 +34,11 @@ const Token = () => {
   const currentAccount = useSelector(
     (state: typeof initialState) => state.AccountData.addressAccounts
   );
+
+  const Usd = useSelector(
+    (state: typeof initialState) => state.ContractSale.Usd
+  );
+
   const BalanceOfLoopToken = async () => {
     setReload(true);
     const provider: any = await detectEthereumProvider();
@@ -96,7 +101,16 @@ const Token = () => {
                   <div className={styles.titleCard}>
                     <h1>{token.Name}</h1>
                     <div className={styles.usd}>
-                      <span> USD : none</span>
+                      <div>
+                        <span className={styles.unit}>USD :</span>
+                        <span className={styles.number}>
+                          {(
+                            (parseFloat(Usd.toString().slice(0, -6)) / 100) *
+                            tokensBalance(token.Name)
+                          ).toLocaleString("en-US")}
+                        </span>
+                        <span className={styles.dolorIcon}>$</span>
+                      </div>
                     </div>
                   </div>
                   <div className={styles.balanceData}>

@@ -6,6 +6,7 @@ const initialState = {
   BalanceLoopToken: "0",
   TokenPrice: "",
   TokenSold: "",
+  Usd: "0",
 };
 
 export const reducerContractSale = (state = initialState, actions: Actions) => {
@@ -18,6 +19,8 @@ export const reducerContractSale = (state = initialState, actions: Actions) => {
       return { ...state, TokenPrice: actions.payload };
     case ActionType.TOKEN_SOLD:
       return { ...state, TokenSold: actions.payload };
+    case ActionType.USD:
+      return { ...state, Usd: actions.payload };
     default:
       return state;
   }

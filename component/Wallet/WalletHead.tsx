@@ -54,12 +54,14 @@ const WalletHead = () => {
           setUtils("KWEI");
           number = Kwei;
         }
+        if (typeof number === "string") {
+          if (number.toString().length > 8) {
+            number = number.substring(0, 8);
+          }
+        }
       }
+      setAccountBalance(number.toString());
     }
-    if (number.toString().length > 8) {
-      number = number.substring(0, 8);
-    }
-    setAccountBalance(number.toString());
   };
   const copied = () => {
     setCopy(true);
@@ -151,7 +153,7 @@ const WalletHead = () => {
             </div>
           </CopyToClipboard>
           <div className={styles.etherImg}>
-            <Image src={EtherImg} alt="Wallet" height="80px" width="80px" />
+            <Image src={EtherImg} alt="Wallet" height="60px" width="60px" />
           </div>
           <div>
             {Balance === "" || Balance === undefined ? (
