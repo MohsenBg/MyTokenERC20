@@ -12,7 +12,7 @@ contract LoopTokenSale {
     int256 public Mathtoken;
     AggregatorV3Interface internal priceFeed;
 
-    event Sell(address indexed  _buyer, uint256 _amount);
+    event Sell(address indexed _buyer, uint256 _amount);
 
     constructor(
         LoopToken _tokenContract,
