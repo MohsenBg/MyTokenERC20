@@ -10,7 +10,9 @@ import {
   ADDRESS_SELL_TOKEN,
 } from "../../config_Contracts";
 import { ActionTypeContractSale } from "../../Redux/ContractSale/ActionType";
+import { ActionTypeError } from "../../Redux/Error/ActionType";
 import { initialState } from "../../Redux/store";
+import { ErrorTypes } from "../Error/ErrorType/ErrorType";
 import styles from "./BuyLoopToken.module.scss";
 
 let check: any;
@@ -121,14 +123,46 @@ const BuyLoopToken = () => {
         ABI_SELL_CONTRACT,
         ADDRESS_SELL_TOKEN
       );
-
-      const Value = (parseFloat(tokenPrice) * countToken).toString();
-      await ContractSale.methods
-        .buyToken(countToken)
-        .send({ from: currentAccount[0], value: Value })
-        .once("receipt", (receipt: any) => {
-          router.push("/wallet", undefined, { shallow: false });
-        });
+      try {
+        const Value = (parseFloat(tokenPrice) * countToken).toString();
+        await ContractSale.methods
+          .buyToken(countToken)
+          .send({ from: currentAccount[0], value: Value })
+          .once("receipt", (receipt: any) => {
+            router.push("/wallet", undefined, { shallow: false });
+          });
+      } catch (error: any) {
+        if (error.code === 4001) {
+          dispatch({
+            type: ActionTypeError.ON_ERROR,
+            title: "Meta Mask",
+            text: "Denied transaction signature",
+            icon: "error",
+            countBtn: 1,
+            btn1: "ok",
+            btn2: "",
+            hidden: false,
+            fontSize: "18px",
+            zIndex: 10,
+            ErrorType: ErrorTypes.META_MASK_USER_DENIED_TRANSACTION,
+          });
+          if (error.code === -32002) {
+            dispatch({
+              type: ActionTypeError.ON_ERROR,
+              title: "Meta Mask",
+              text: "request already sent to you ",
+              icon: "error",
+              countBtn: 1,
+              btn1: "ok",
+              btn2: "",
+              hidden: false,
+              fontSize: "18px",
+              zIndex: 10,
+              ErrorType: ErrorTypes.META_MASK_CONNECTION_REJECTED,
+            });
+          }
+        }
+      }
     }
   };
 

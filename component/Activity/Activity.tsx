@@ -11,7 +11,7 @@ import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { useSelector } from "react-redux";
 import { initialState } from "../../Redux/store";
-import { BsArrowRepeat, BsArrowUpRight } from "react-icons/bs";
+import { BsArrowRepeat, BsArrowUpRight, BsCheckAll } from "react-icons/bs";
 import { MdCallReceived } from "react-icons/md";
 import SmallLoading from "../Loading/SmallLoading";
 import Image from "next/image";
@@ -75,7 +75,6 @@ const Activity = () => {
     );
 
     let TransferLoopEventSend: any = [];
-
     await ContractLoopToken.getPastEvents(
       "Transfer",
       {
@@ -130,8 +129,97 @@ const Activity = () => {
       }
     );
 
+    let Approve: any = [];
+    await ContractLoopToken.getPastEvents(
+      "Approval",
+      {
+        fromBlock: 0,
+        toBlock: "latest",
+        filter: { _owner: currentAccount[0] },
+      },
+      (error: any, result: any) => {
+        if (result) {
+          for (let i = 0; i < result.length; i++) {
+            let Objects = {
+              id: result[i].transactionHash,
+              to: result[i].returnValues._spender,
+              from: result[i].returnValues._owner,
+              amount: `${result[i].returnValues._value}`,
+              blockNumber: result[i].blockNumber,
+              status: "Approve Loop Token",
+            };
+            Approve.push(Objects);
+          }
+        }
+      }
+    );
+
+    let TransferFromReceive: any = [];
+    await ContractLoopToken.getPastEvents(
+      "TransferFrom",
+      {
+        fromBlock: 0,
+        toBlock: "latest",
+        filter: { _to: currentAccount[0] },
+      },
+      (error: any, result: any) => {
+        if (result) {
+          for (let i = 0; i < result.length; i++) {
+            if (
+              result[i].returnValues._from.toLowerCase() !==
+              ADDRESS_SELL_TOKEN.toLowerCase()
+            ) {
+              let Objects = {
+                id: result[i].transactionHash,
+                to: result[i].returnValues._to,
+                from: result[i].returnValues._from,
+                amount: `+${result[i].returnValues._value}`,
+                blockNumber: result[i].blockNumber,
+                status: "Receive(TransferFrom)",
+              };
+              TransferFromReceive.push(Objects);
+            }
+          }
+        }
+      }
+    );
+
+    let TransferFromSend: any = [];
+    await ContractLoopToken.getPastEvents(
+      "TransferFrom",
+      {
+        fromBlock: 0,
+        toBlock: "latest",
+        filter: { _from: currentAccount[0] },
+      },
+      (error: any, result: any) => {
+        if (result) {
+          for (let i = 0; i < result.length; i++) {
+            if (
+              result[i].returnValues._from.toLowerCase() !==
+              ADDRESS_SELL_TOKEN.toLowerCase()
+            ) {
+              let Objects = {
+                id: result[i].transactionHash,
+                to: result[i].returnValues._to,
+                from: result[i].returnValues._from,
+                amount: `-${result[i].returnValues._value}`,
+                blockNumber: result[i].blockNumber,
+                status: "Send(TransferFrom)",
+              };
+              TransferFromSend.push(Objects);
+            }
+          }
+        }
+      }
+    );
+
     let merge = await SellLoopEvent.concat(TransferLoopEventSend);
     merge = await merge.concat(TransferLoopEventReceive);
+    merge = await merge.concat(Approve);
+    merge = await merge.concat(TransferFromReceive);
+    merge = await merge.concat(TransferFromSend);
+
     const SortByBlockNumber = await merge.sort(function (a: any, b: any) {
       return a.blockNumber - b.blockNumber;
     });
@@ -141,7 +229,7 @@ const Activity = () => {
     }
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 1000);
   };
 
   return (
@@ -175,13 +263,19 @@ const Activity = () => {
                   }}
                 >
                   <div className={styles.left}>
-                    {item.status === "Receive" ? (
+                    {item.status === "Receive" ||
+                    item.status === "Receive(TransferFrom)" ? (
                       <div className={styles.arrowIcon}>
                         <MdCallReceived />
                       </div>
-                    ) : item.status === "Send" ? (
+                    ) : item.status === "Send" ||
+                      item.status === "Send(TransferFrom)" ? (
                       <div className={styles.arrowIcon}>
                         <BsArrowUpRight />
+                      </div>
+                    ) : item.status === "Approve Loop Token" ? (
+                      <div className={styles.arrowIcon}>
+                        <BsCheckAll />
                       </div>
                     ) : (
                       <div className={styles.arrowIcon}>

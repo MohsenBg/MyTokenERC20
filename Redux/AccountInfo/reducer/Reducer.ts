@@ -5,6 +5,7 @@ const initialState = {
   addressAccounts: [],
   balance: "",
   ChainId: "",
+  approval: "",
   Web3: "",
 };
 
@@ -18,6 +19,8 @@ export const reducerAccountInfo = (state = initialState, action: Actions) => {
       return { ...state, ChainId: action.payload };
     case ActionType.WEB3:
       return { ...state, Web3: action.payload };
+    case ActionType.APPROVAL:
+      return { ...state, approval: action.payload };
     default:
       return state;
   }

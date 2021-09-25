@@ -7,10 +7,14 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
 import Dispatcher from "../component/Dispatcher/Dispatcher";
 import Error from "../component/Error/Error";
+import Loading from "../component/Loading/Loading";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <>
+        <div className="loading">
+          <Loading />
+        </div>
         <div>
           <Error />
         </div>

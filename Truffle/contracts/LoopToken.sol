@@ -20,7 +20,7 @@ contract LoopToken {
     //standard remcommended
     string public standard = "Loop Token v1.0";
     //totalSupply
-    uint256 public totalSupply;
+    uint192 public totalSupply;
     //decimals
     uint16 decimals = 0;
 
@@ -46,7 +46,7 @@ contract LoopToken {
 
     mapping(address => mapping(address => uint256)) public allowance;
 
-    constructor(uint256 _totalSupply) {
+    constructor(uint192 _totalSupply) {
         totalSupply = _totalSupply;
         balanceOf[msg.sender] = totalSupply;
     }

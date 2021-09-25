@@ -6,6 +6,8 @@ $defaultColor: rgba(255, 255, 255, 1);
   z-index: 4;
   position: fixed;
   width: 100%;
+  background-color: rgb(20, 21, 24);
+  height: 80px;
   .mainContentNav {
     position: relative;
     color: $defaultColor;
@@ -45,7 +47,7 @@ $defaultColor: rgba(255, 255, 255, 1);
       }
     }
     .btnConnectWallet {
-      z-index: 5;
+      z-index: 3;
       overflow: hidden;
       padding-top: 5px;
       padding-left: 2px;
@@ -53,13 +55,14 @@ $defaultColor: rgba(255, 255, 255, 1);
       height: 50px;
       position: absolute;
       top: 10px;
-      right: 0;
+      right: -20px;
     }
     .Accounts {
+      margin-top: -5px;
       z-index: 5;
     }
     .sideLeft {
-      z-index: 4;
+      z-index: 6;
     }
   }
 }

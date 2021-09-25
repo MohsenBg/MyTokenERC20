@@ -36,8 +36,6 @@ const SendTokenComponent: React.FunctionComponent<Props> = ({ params }) => {
   const [warning, setWarning] = useState("");
   const [balanceTransfer, setBalanceTransfer] = useState<any>("0");
   const [sizeWidth, setSizeWidth] = useState(30);
-  const [gasPrice, setGasPrice] = useState<any>();
-  const [gasLimit, setGasLimit] = useState<any>();
 
   const router = useRouter();
 
@@ -61,10 +59,7 @@ const SendTokenComponent: React.FunctionComponent<Props> = ({ params }) => {
           const UserAccount = userAccount[0];
           const CheckNotAddressUsed =
             UserAccount.toLowerCase() !== addressTo.toLowerCase();
-          // const block = web3.eth.getBlock("latest");
-          // let currGas: any = (await block).gasLimit;
-          setGasLimit(21000);
-          setGasPrice(20);
+
           if (addressTo.length >= 1) {
             if (checkAddressReal && CheckNotAddressUsed) {
               setWarning("none");
@@ -83,29 +78,6 @@ const SendTokenComponent: React.FunctionComponent<Props> = ({ params }) => {
     };
     AddressTo();
   }, [addressTo, userAccount]);
-  useEffect(() => {
-    convert(Balance);
-  }, [userAccount, Balance]);
-  const convert = async (value: any) => {
-    let number = value;
-    const provider: any = await detectEthereumProvider();
-    if (provider) {
-      if (userAccount.length >= 1) {
-        const web3 = new Web3(provider);
-        const ContractLoopToken = new web3.eth.Contract(
-          //@ts-ignore
-          ABI_LOOP_TOKEN_CONTRACT,
-          ADDRESS_LOOP_TOKEN
-        );
-        const balance = await ContractLoopToken.methods.balanceOf(userAccount);
-        dispatch({
-          type: ActionTypeAccountInfo.ACCOUNT_BALANCE,
-          payload: balance,
-        });
-        setAccountBalance(number);
-      }
-    }
-  };
 
   const valueSpan = (event: React.KeyboardEvent) => {
     const otherSymbol = [
@@ -187,7 +159,7 @@ const SendTokenComponent: React.FunctionComponent<Props> = ({ params }) => {
   };
 
   const handelMaxBtn = async () => {
-    onBalanceTransferChange(accountBalance);
+    onBalanceTransferChange(Balance);
   };
 
   const onBalanceTransferChange = async (value: any) => {
@@ -268,7 +240,7 @@ const SendTokenComponent: React.FunctionComponent<Props> = ({ params }) => {
                           {TokenSelected[0].Name}
                         </div>
                         <div className={styles.balanceToken}>
-                          Balance: {accountBalance}
+                          Balance: {Balance}
                         </div>
                       </div>
                     </div>

@@ -1,10 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi&display=swap");
 .container {
   position: relative;
-  z-index: 5;
+  z-index: 3;
   .AccountData {
     position: absolute;
-    right: 40px;
+    right: 20px;
     margin-top: 18px;
     display: flex;
     align-items: center;
@@ -42,6 +42,12 @@
       animation: small 500ms ease-in-out;
       transform: scale(1);
     }
+  }
+  .PanelAccount {
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    z-index: -1;
   }
 }
 @keyframes small {

@@ -3,10 +3,12 @@ const truffleAssertions = require("truffle-assertions");
 
 contract("Product", (accounts) => {
   const Products = artifacts.require("Products");
+  const LoopToken = artifacts.require('LoopToken')
   const Admin = accounts[0];
   const member = accounts[1];
   before(async () => {
     this.products = await Products.deployed();
+    this.LoopToken = await LoopToken.deployed();
   });
   it("success deployed", async () => {
     const address = await this.products.address;
@@ -21,7 +23,7 @@ contract("Product", (accounts) => {
   });
   it("AddProduct", async () => {
     //fist product Admin
-    await this.products.AddProducts(
+    await this.products.AddProduct(
       "book",
       "good Book",
       "https://bookImg.png",
@@ -46,7 +48,7 @@ contract("Product", (accounts) => {
     assert.strictEqual(Price.toNumber(), 50, "check Price");
     assert.strictEqual(SellAble, true, "check SellAble");
     //second product admin
-    await this.products.AddProducts(
+    await this.products.AddProduct(
       "desk",
       "bad desk",
       "https://deskImg.png",
@@ -72,7 +74,7 @@ contract("Product", (accounts) => {
     assert.strictEqual(SellAble, false, "check SellAble");
 
     //fist member product
-    const AddProduct = await this.products.AddProducts(
+    const AddProduct = await this.products.AddProduct(
       "car",
       "fast car",
       "https://carImg.png",
@@ -99,7 +101,7 @@ contract("Product", (accounts) => {
     assert.strictEqual(Price.toNumber(), 150000, "check Price");
     assert.strictEqual(SellAble, true, "check SellAble");
     await truffleAssertions.reverts(
-      this.products.AddProducts(
+      this.products.AddProduct(
         "car",
         "fast car",
         "https://carImg.png",
@@ -118,7 +120,7 @@ contract("Product", (accounts) => {
        " one event should exist "
      );
   
-     assert.strictEqual(event[0].event, "_AddProducts", "event: select incorrect event");
+     assert.strictEqual(event[0].event, "_AddProduct", "event: select incorrect event");
      
      assert.strictEqual(
        event[0].args.Id.toNumber(),
@@ -166,103 +168,118 @@ contract("Product", (accounts) => {
   it('buyProduct',async()=>{
     await truffleAssertions.reverts(this.products.BuyProduct(10,{from:Admin}))
     await truffleAssertions.reverts(this.products.BuyProduct(2,{from:member}))
-    const BuyProduct = await this.products.BuyProduct(3,{from:Admin});
+   const approve = await this.LoopToken.approve(this.products.address,150000);
+   await approve; 
+   let allowance = await this.LoopToken.allowance(Admin,this.products.address);
+   assert.strictEqual(allowance.toNumber(),150000,"check approve")
+   const BuyProduct = await this.products.BuyProduct(3,{from:Admin});
     await BuyProduct;
+     allowance = await this.LoopToken.allowance(Admin,this.products.address);
+   assert.strictEqual(allowance.toNumber(),0,"check approve")
     let Item = await this.products.items(3);
     let Owner = await Item.Owner;
     assert.strictEqual(Owner,Admin,"products Owner most be Admin")
-    let balance = await this.products.balanceOf(Admin);
+    let balance = await this.LoopToken.balanceOf(Admin);
     assert.strictEqual(balance.toNumber(),1850000,"balance of Admin");
     let Id = await Item.Id;
     assert.strictEqual(Id.toNumber(),3,"products id should 3")
-    balance = await this.products.balanceOf(member);
+    balance = await this.LoopToken.balanceOf(member);
     assert.strictEqual(balance.toNumber(),150000,"balance of member");
     assert.strictEqual(Item.SellAble,false,"products shouldn't sellAble")
 
 
     //!event
 
-    const event = await BuyProduct.logs;
+    const eventApproval = await approve.logs;
     assert.strictEqual(
-       event.length,
-       2,
-       " two event should exist transfer/_BuyProducts "
+      eventApproval.length,
+       1,
+       " one event should exist Approval"
      );
 
-    //* first event
+    const eventBuyProduct = await BuyProduct.logs;
+    assert.strictEqual(
+      eventBuyProduct.length,
+       1,
+       " one event should exist _BuyProducts "
+     );
+
+ 
+
+    //* first event (Approval)
 
     assert.strictEqual(
-      event[0].event,
-      "Transfer",
+      eventApproval[0].event,
+      "Approval",
       "event: select incorrect event"
     );
 
     assert.strictEqual(
-      event[0].args._from,
+      eventApproval[0].args._owner,
       Admin,
       "event: select incorrect account for send value"
     );
 
     assert.strictEqual(
-      event[0].args._to,
-      member,
+      eventApproval[0].args._spender,
+      this.products.address,
       "event: select incorrect account for receive value"
     );
 
     assert.strictEqual(
-      event[0].args._value.toNumber(),
+      eventApproval[0].args._value.toNumber(),
       150000,
       "event: select incorrect account for receive value"
     );
 
     //* second event
 
-     assert.strictEqual(event[1].event, "_BuyProduct", "event: select incorrect event");
+     assert.strictEqual(eventBuyProduct[0].event, "_BuyProduct", "event: select incorrect event");
      
      assert.strictEqual(
-      event[1].args.Buyer,
+      eventBuyProduct[0].args.Buyer,
       Admin,
       "event: select incorrect Buyer of Product"
     );
 
      assert.strictEqual(
-       event[1].args.Id.toNumber(),
+      eventBuyProduct[0].args.Id.toNumber(),
        3,
        "event: select incorrect Id "
      );
 
      assert.strictEqual(
-      event[1].args.Seller,
+      eventBuyProduct[0].args.Seller,
       member,
       "event: select incorrect seller of Product"
     );
 
     assert.strictEqual(
-      event[1].args.ProductName,
+      eventBuyProduct[0].args.ProductName,
       "car",
       "event: select incorrect ProductName"
     );
 
     assert.strictEqual(
-      event[1].args.descriptors,
+      eventBuyProduct[0].args.descriptors,
       'fast car',
       "event: select incorrect descriptors"
     );
 
     assert.strictEqual(
-      event[1].args.ImgUrl,
+      eventBuyProduct[0].args.ImgUrl,
       'https://carImg.png',
       "event: select incorrect Id "
     );
 
     assert.strictEqual(
-      event[1].args.Price.toNumber(),
+      eventBuyProduct[0].args.Price.toNumber(),
       150000,
       "event: select incorrect Price"
     );
 
     assert.strictEqual(
-      event[1].args.SellAble,
+      eventBuyProduct[0].args.SellAble,
       false,
       "event: product should be SellAble "
     );

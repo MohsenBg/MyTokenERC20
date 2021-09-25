@@ -45,19 +45,34 @@ const Error = () => {
         dispatch({
           type: ActionTypeError.END_ERROR,
         });
+        break;
       case ErrorTypes.META_MASK_USER_DENIED_TRANSACTION:
         dispatch({
           type: ActionTypeError.END_ERROR,
         });
+        break;
       case ErrorTypes.WRONG_CHAIN_ID:
         dispatch({
           type: ActionTypeError.END_ERROR,
         });
+        break;
       case ErrorTypes.CONNECT_YOUR_ACCOUNT:
         dispatch({
           type: ActionTypeError.END_ERROR,
         });
         break;
+      case ErrorTypes.ADD_PRODUCT:
+        dispatch({
+          type: ActionTypeError.END_ERROR,
+        });
+        break;
+      case ErrorTypes.PRODUCT_NOT_EXIST:
+        dispatch({
+          type: ActionTypeError.END_ERROR,
+        });
+        await router.push("/Dashboard", undefined, { shallow: false });
+        break;
+
       default:
         break;
     }
