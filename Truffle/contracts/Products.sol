@@ -2,8 +2,9 @@
 pragma solidity >=0.6.0 <0.9.0;
 import "./LoopToken.sol";
 
-contract Products is LoopToken {
+contract Products {
     uint32 public Count = 0;
+    LoopToken public tokenContract;
     struct item {
         uint32 Id;
         address Owner;
@@ -15,9 +16,9 @@ contract Products is LoopToken {
     }
     mapping(uint32 => item) public items;
 
-    event _AddProducts(
-        uint32 Id,
-        address Owner,
+    event _AddProduct(
+        uint32 indexed Id,
+        address indexed Owner,
         string ProductName,
         string descriptors,
         string ImgUrl,
@@ -26,9 +27,9 @@ contract Products is LoopToken {
     );
 
     event _BuyProduct(
-        address Seller,
-        uint32 Id,
-        address Buyer,
+        address indexed Seller,
+        uint32 indexed Id,
+        address indexed Buyer,
         string ProductName,
         string descriptors,
         string ImgUrl,
@@ -37,8 +38,8 @@ contract Products is LoopToken {
     );
 
     event _ChangeProduct(
-        uint32 Id,
-        address Owner,
+        uint32 indexed Id,
+        address indexed Owner,
         string ProductName,
         string descriptors,
         string ImgUrl,
@@ -47,9 +48,11 @@ contract Products is LoopToken {
     );
     event _DeleteProduct(uint32 Id, address Owner);
 
-    constructor() LoopToken(2000000) {}
+    constructor(LoopToken _tokenContract) {
+        tokenContract = _tokenContract;
+    }
 
-    function AddProducts(
+    function AddProduct(
         string memory _productName,
         string memory _descriptors,
         string memory _ImgUrl,
@@ -71,7 +74,7 @@ contract Products is LoopToken {
             _Price,
             _SallAble
         );
-        emit _AddProducts(
+        emit _AddProduct(
             id,
             msg.sender,
             _productName,
@@ -83,24 +86,24 @@ contract Products is LoopToken {
     }
 
     function BuyProduct(uint32 _productId) public {
-        item memory selectedProduct = items[_productId];
+        item storage selectedProduct = items[_productId];
+
         address ProductOwner = selectedProduct.Owner;
         require(
-            ProductOwner != msg.sender,
+            selectedProduct.Owner != msg.sender,
             "product owner can't buy own Product"
         );
         require(selectedProduct.Id != 0, "product not exist");
         require(selectedProduct.SellAble, "product most sellAble");
-        require(transfer(ProductOwner, selectedProduct.Price));
-        selectedProduct = item(
-            selectedProduct.Id,
-            msg.sender,
-            selectedProduct.ProductName,
-            selectedProduct.descriptors,
-            selectedProduct.ImgUrl,
-            selectedProduct.Price,
-            false
+        require(
+            tokenContract.transferFrom(
+                msg.sender,
+                selectedProduct.Owner,
+                selectedProduct.Price
+            )
         );
+        selectedProduct.Owner = msg.sender;
+        selectedProduct.SellAble = false;
         items[_productId] = selectedProduct;
         emit _BuyProduct(
             ProductOwner,

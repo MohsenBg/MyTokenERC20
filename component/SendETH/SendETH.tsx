@@ -167,7 +167,6 @@ const SendETH = () => {
                   console.log(error);
                 }
                 if (transaction) {
-                  console.log(transaction);
                   router.push("/wallet", undefined, { shallow: false });
                 }
               }

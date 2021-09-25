@@ -3,4 +3,5 @@ export enum ActionTypeAccountInfo {
   ACCOUNT_ADDRESS = "ACCOUNT_ADDRESS",
   ACCOUNT_BALANCE = "ACCOUNT_BALANCE",
   CHAIN_ID = "ChainID",
+  APPROVAL = "APPROVAL",
 }

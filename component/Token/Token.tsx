@@ -133,6 +133,9 @@ const Token = () => {
                   <Link href={`/transaction/${token.Name}`}>
                     <div>Send</div>
                   </Link>
+                  <Link href={`/Approval/${token.Name}`}>
+                    <div>Approve</div>
+                  </Link>
                 </div>
               </div>
             );

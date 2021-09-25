@@ -19,9 +19,11 @@ const NavBar = () => {
           </div>
 
           {accounts.length >= 1 ? (
-            <div className={styles.Accounts}>
-              <Accounts />
-            </div>
+            <>
+              <div className={styles.Accounts}>
+                <Accounts />
+              </div>
+            </>
           ) : (
             <div className={styles.btnConnectWallet}>
               <ConnectWallet />
@@ -34,10 +36,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
-/* <div className={styles.logo}>
-            <span className={styles.logoText}>LoopToken</span>
-            <div className={styles.logoImg}>
-              <Image src={LogoImg} width="55px" height="55px" />
-            </div>
-          </div> */

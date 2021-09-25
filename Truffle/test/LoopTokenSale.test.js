@@ -2,12 +2,12 @@ const assert = require("assert");
 const truffleAssert = require("truffle-assertions");
 
 contract("LoopTokenSale", (accounts) => {
-  const LoopToken = artifacts.require("Products");
+  const LoopToken = artifacts.require("LoopToken");
   const LoopTokenSale = artifacts.require("LoopTokenSale");
   const TokenPrice = 300000000000000; // wei
   const buyer = accounts[1];
   const admin = accounts[0];
-  // 2m token exist and only 800K available for sell
+  // 3,000,000 token exist and only 800K available for sell
   const tokensAvailableForSell = 800000;
   before(async () => {
     this.loopTokenSale = await LoopTokenSale.deployed();

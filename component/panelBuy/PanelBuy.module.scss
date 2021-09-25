@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Besley&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
+.container {
+  position: fixed;
+  height: calc(100vh - 120px);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  .panel {
+    position: relative;
+    top: 0;
+    background-color: rgb(0, 0, 0);
+    border: 2px solid white;
+    box-shadow: 1px 2px 10px white;
+    width: 300px;
+    height: 400px;
+    border-radius: 8px;
+    .IconClose {
+      color: white;
+      font-size: 30px;
+      position: absolute;
+      top: 10px;
+      cursor: pointer;
+      right: 10px;
+      &:hover {
+        color: red;
+      }
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    .title {
+      text-align: center;
+      font-size: 25px;
+      font-family: "Besley", serif;
+      margin-bottom: 0;
+    }
+    .balanceContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      .balance {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: 0.3em 0;
+        .left {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-basis: 100%;
+          font-family: "Merriweather", serif;
+          font-size: 12px;
+        }
+        .right {
+          font-family: "Balsamiq Sans", cursive;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-basis: 100%;
+          .number {
+            font-family: "Anton", sans-serif;
+            font-size: 14px;
+          }
+          .uint {
+            margin-left: 0.3em;
+            font-size: 10px;
+          }
+        }
+      }
+    }
+    .footerContainer {
+      margin: 1em 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      .text {
+        font-family: "Ubuntu", sans-serif;
+        margin-top: 0.5em;
+        font-size: 14px;
+      }
+      .btn {
+        cursor: pointer;
+        margin-top: 1.5em;
+        padding: 5px 15px;
+        color: aqua;
+        background-color: rgba(0, 255, 255, 0.185);
+        border-radius: 2px;
+        &:hover {
+          background-color: rgb(0, 255, 170, 0.185);
+          color: aquamarine;
+        }
+      }
+    }
+  }
+}

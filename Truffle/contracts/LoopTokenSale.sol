@@ -5,7 +5,7 @@ import "./LoopToken.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract LoopTokenSale {
-    address admin;
+    address Admin;
     LoopToken public tokenContract;
     uint256 public tokenPrice;
     uint256 public tokenSold;
@@ -19,7 +19,7 @@ contract LoopTokenSale {
         uint256 _tokenPrice,
         int256 _Math
     ) {
-        admin = msg.sender;
+        Admin = msg.sender;
         tokenContract = _tokenContract;
         tokenPrice = _tokenPrice;
         Mathtoken = _Math;
@@ -34,10 +34,19 @@ contract LoopTokenSale {
     }
 
     function buyToken(uint256 _numberOfToken) public payable {
-        require(msg.value == multiply(_numberOfToken, tokenPrice));
-        require(tokenContract.balanceOf(address(this)) >= _numberOfToken);
-        require(tokenContract.transfer(msg.sender, _numberOfToken));
-        require(tokenSold <= 800000);
+        require(
+            msg.value == multiply(_numberOfToken, tokenPrice),
+            "check value send"
+        );
+        require(
+            tokenContract.balanceOf(address(this)) >= _numberOfToken,
+            "check balance Of Contract"
+        );
+        require(
+            tokenContract.transfer(msg.sender, _numberOfToken),
+            "check transfer token"
+        );
+        require(tokenSold <= 800000, "check tokenSold befor");
         tokenSold += _numberOfToken;
         assert(tokenSold <= 800000);
         emit Sell(msg.sender, _numberOfToken);
@@ -56,10 +65,10 @@ contract LoopTokenSale {
     }
 
     function endSale() public {
-        require(msg.sender == admin);
+        require(msg.sender == Admin);
         require(
             tokenContract.transfer(
-                admin,
+                Admin,
                 tokenContract.balanceOf(address(this))
             )
         );

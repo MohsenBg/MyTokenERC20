@@ -1,0 +1,196 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap");
+.container {
+  margin-top: 6em;
+  color: white;
+  margin-bottom: 1em;
+  .mainContent {
+    .imageContainer {
+      margin-top: 2em;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .Upload {
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 250px;
+        width: 300px;
+        background-color: rgb(66, 66, 66);
+        border-radius: 8px;
+        &:hover {
+          color: aqua;
+        }
+        .back {
+          z-index: 3;
+          cursor: pointer;
+          display: flex;
+          position: absolute;
+          left: 10px;
+          top: 10px;
+          color: aqua;
+          &:hover {
+            color: aquamarine;
+          }
+          span {
+            margin-left: 0.2em;
+            font-size: 12px;
+          }
+        }
+        input {
+          z-index: 2;
+          opacity: 0;
+          cursor: pointer;
+          width: 100%;
+          height: 100%;
+        }
+        .iconsUpload {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          font-size: 50px;
+          position: absolute;
+          .text {
+            color: white;
+            font-size: 16px;
+            &:hover {
+              color: white;
+            }
+          }
+        }
+        .img {
+          width: 100%;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          .iconDelete {
+            background-color: rgba(0, 0, 0, 0.603);
+            padding: 5px;
+            border-radius: 50%;
+            display: flex;
+            position: absolute;
+            z-index: 3;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 25px;
+            cursor: pointer;
+            &:hover {
+              color: red;
+            }
+          }
+          .cover {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+
+            img {
+              padding: 5px;
+              flex-shrink: 0;
+              height: 250px;
+            }
+          }
+        }
+      }
+    }
+    .ProductData {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: 1em;
+      .input {
+        width: 300px;
+        padding: 10px;
+        margin-top: 0.2em;
+        textarea {
+          color: rgb(0, 238, 255);
+          font-size: 13px;
+          border: none;
+          font-family: "Roboto Mono", monospace;
+          border-radius: 3px;
+          outline: none;
+          margin-top: 0.4em;
+          width: 100%;
+          resize: none;
+          padding-top: 10px;
+          padding-left: 10px;
+          background-color: rgba(0, 217, 255, 0.185);
+          height: 150px;
+        }
+        input {
+          margin-top: 0.4em;
+          background-color: rgba(0, 217, 255, 0.185);
+          width: 100%;
+          padding: 5px;
+          padding-left: 10px;
+          color: rgb(0, 238, 255);
+          font-size: 13px;
+          border: none;
+          font-family: "Roboto Mono", monospace;
+          border-radius: 3px;
+          outline: none;
+        }
+
+        .text {
+          padding-left: 5px;
+          font-size: 13px;
+          font-family: "Roboto Mono", monospace;
+        }
+        .sellAble {
+          width: 10px;
+          display: flex;
+          transform: scale(1.4);
+          margin-right: 1em;
+          cursor: pointer;
+        }
+      }
+      .sell {
+        margin-top: 30px;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+      }
+    }
+    .btnContainer {
+      margin: 2em 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .btn {
+        border-radius: 10px;
+        padding: 8px 25px;
+        cursor: pointer;
+        font-family: "Roboto Mono", monospace;
+        color: aquamarine;
+        background-color: rgba(127, 255, 212, 0.185);
+        &:hover {
+          background-color: rgba(255, 255, 0, 0.185);
+          color: yellow;
+        }
+      }
+    }
+    .warningContainer {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .warning {
+        border-radius: 20px;
+        margin-top: 0.8em;
+        font-size: 12px;
+        color: red;
+        background-color: rgba(255, 0, 0, 0.185);
+        padding: 5px 10px;
+        font-family: "Libre Baskerville", serif;
+      }
+    }
+  }
+}

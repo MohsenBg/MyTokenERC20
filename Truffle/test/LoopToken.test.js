@@ -1,5 +1,5 @@
 const assert = require("assert");
-const LoopToken = artifacts.require("Products");
+const LoopToken = artifacts.require("LoopToken");
 const truffleAssert = require("truffle-assertions");
 
 contract("LoopToken", async (accounts) => {
