@@ -70,7 +70,7 @@ const BuyProduct = () => {
           }
         }
       }
-      setProduct(data);
+      setProduct(data.sort(() => Math.random() - Math.random()));
       setTimeout(() => {
         dispatch({
           type: ActionTypeLoading.END_LOADING,

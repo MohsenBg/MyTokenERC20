@@ -24,12 +24,12 @@ const Dashboard = () => {
         <meta name="Dashboard" content="Dashboard ..." />
       </Head>
       <div className={styles.container}>
-        <div>
+        <div className={styles.dashboard}>
           <DashboardHead getStatus={(e: any) => changeStatus(e)} />
         </div>
         <div>
           {status === "My Product" ? (
-            <div>
+            <div className={styles.MyProduct}>
               <MyProduct />
             </div>
           ) : status === "Add Product" ? (

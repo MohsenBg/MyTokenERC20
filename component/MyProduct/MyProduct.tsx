@@ -65,7 +65,7 @@ const MyProduct = () => {
           }
         }
       }
-      setProduct(data);
+      setProduct(data.reverse());
       setTimeout(() => {
         setLoading(false);
       }, 1000);
@@ -107,7 +107,12 @@ const MyProduct = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={
+        loading ? { overflow: "hidden", height: "calc(100vh - 180px)" } : {}
+      }
+    >
       {loading ? (
         <div className={styles.loading}>
           <SmallLoading />

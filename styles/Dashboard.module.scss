@@ -1,3 +1,9 @@
 .container {
   color: white;
+  .dashboard {
+    z-index: 2;
+  }
+  .MyProduct {
+    z-index: 1;
+  }
 }
