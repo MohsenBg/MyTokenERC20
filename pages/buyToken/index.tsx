@@ -1,9 +1,19 @@
-import detectEthereumProvider from "@metamask/detect-provider";
 import Head from "next/head";
 import React from "react";
+import { useDispatch } from "react-redux";
 import BuyLoopToken from "../../component/BuyToken/BuyLoopToken";
+import { ActionTypeLoading } from "../../Redux/Loading/Actions";
 interface Props {}
 const BuyToken: React.FunctionComponent<Props> = () => {
+  const dispatch = useDispatch();
+  dispatch({
+    type: ActionTypeLoading.ON_LOADING,
+  });
+  setTimeout(() => {
+    dispatch({
+      type: ActionTypeLoading.END_LOADING,
+    });
+  }, 2000);
   return (
     <div>
       <Head>

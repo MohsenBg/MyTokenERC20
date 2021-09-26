@@ -3,8 +3,6 @@ import type { AppProps } from "next/app";
 import NavBar from "../component/NavBar/NavBar";
 import { Provider } from "react-redux";
 import { store } from "../Redux/store";
-import detectEthereumProvider from "@metamask/detect-provider";
-import { useEffect } from "react";
 import Dispatcher from "../component/Dispatcher/Dispatcher";
 import Error from "../component/Error/Error";
 import Loading from "../component/Loading/Loading";

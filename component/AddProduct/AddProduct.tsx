@@ -10,12 +10,14 @@ import { ErrorTypes } from "../Error/ErrorType/ErrorType";
 import detectEthereumProvider from "@metamask/detect-provider";
 import Web3 from "web3";
 import { ABI_PRODUCTS, ADDRESS_PRODUCTS } from "../../config_Contracts";
+import SmallLoading from "../Loading/SmallLoading";
 const AddProduct = () => {
   const [fileUrl, setFileUrl] = useState<any>("");
   const [productName, setProductName] = useState<any>("");
   const [description, setDescription] = useState<any>("");
   const [price, setPrice] = useState<any>(0);
   const [sellAble, setSellAble] = useState<any>(false);
+  const [loading, setLoading] = useState(false);
 
   const [warning, setWarning] = useState({
     ProductName: "fill Input  Product Name ",
@@ -34,6 +36,7 @@ const AddProduct = () => {
     if (file.length > 0) {
       if (file[0].size <= 500000) {
         if (file[0].type.includes("image")) {
+          setLoading(true);
           const formData: any = new FormData();
           formData.append("file", file[0]);
           formData.append("upload_preset", "product Image");
@@ -47,6 +50,9 @@ const AddProduct = () => {
               warning.ImageUrl = "";
               setWarning(Waring);
               setFileUrl(response.data.url);
+              setTimeout(() => {
+                setLoading(false);
+              }, 1000);
             });
         } else {
           dispatch({
@@ -190,6 +196,14 @@ const AddProduct = () => {
       <div className={styles.mainContent}>
         <div className={styles.imageContainer}>
           <div className={styles.Upload}>
+            {loading ? (
+              <div className={styles.loading}>
+                <div>
+                  <SmallLoading />
+                </div>
+                <h3>Uploading</h3>
+              </div>
+            ) : null}
             <input type="file" onChange={(e) => getFile(e.target.files)} />
             {fileUrl === "" ? (
               <div className={styles.iconsUpload}>
